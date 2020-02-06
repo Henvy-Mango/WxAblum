@@ -1,0 +1,13 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/preview/preview",
+    "pages/album/album"
+  ],
+  "window": {
+    "navigationBarTitleText": "Naomi 图床",
+    "navigationBarTextStyle": "white",
+    "navigationBarBackgroundColor": "#373b3e"
+  },
+  "sitemapLocation": "sitemap.json"
+}
