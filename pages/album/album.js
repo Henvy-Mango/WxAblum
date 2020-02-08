@@ -30,6 +30,10 @@ Page({
     // 相册列表数据
     albumList: [],
 
+    //文件夹选择器
+    folder: ['/'],
+    index: 0,
+
     // 图片布局列表（二维数组，由`albumList`计算而得）
     layoutList: [],
 
@@ -128,17 +132,25 @@ Page({
 
   // 获取相册列表
   getAlbumList(callback) {
+    let that = this;
     this.showLoading('加载列表中…');
-    setTimeout(() => this.hideLoading(), 1000);
+    setTimeout(() => this.hideLoading(), 300);
+    var prefix = that.data.folder[that.data.index];
+    if (prefix == '/')
+      prefix = config.Prefix
+
     cos.getBucket({
       Bucket: config.Bucket,
       Region: config.Region,
-      Prefix: config.albumDir
+      Prefix: prefix,
+      Delimiter: config.Delimiter,
     }, function(err, data) {
       if (data) {
         console.log(data)
         var list = (data && data.Contents || [])
-          .map(item => 'https://' + config.Bucket + '.cos.' + config.Region + '.myqcloud.com/' + util.camSafeUrlEncode(item.Key).replace(/%2F/g, '/')).filter(item => /\.(jpg|png|gif)$/.test(item));
+          .map(item => 'https://' + config.Bucket + '.cos.' + config.Region + '.myqcloud.com/' + util.camSafeUrlEncode(item.Key).replace(/%2F/g, '/')).filter(item => /\.(jpg|png|gif|jpeg|pjp|pjpeg|jfif)$/.test(item));
+        if (that.data.folder.length == 1)
+          that.data.folder.push((data && data.Contents || []).map(item => item.Key).filter(item => /^((?!\.).)*$/.test(item)));
         callback(list);
       } else {
         callback([]);
@@ -156,7 +168,8 @@ Page({
     });
     layoutList = listToMatrix(imageList, layoutColumnSize);
     this.setData({
-      layoutList
+      layoutList,
+      folder: this.data.folder
     });
   },
 
@@ -237,14 +250,13 @@ Page({
   // 下载图片
   downloadImage() {
     this.showLoading('正在保存图片…');
-    let tmp = this.data.imageInAction;
-    console.log('download_image_url', tmp);
+    console.log('download_image_url', this.data.imageInAction);
     wx.downloadFile({
-      url: tmp,
+      url: this.data.imageInAction,
       type: 'image',
       success: (resp) => {
-        wx.saveFile({
-          tempFilePath: resp.tempFilePath,
+        wx.saveImageToPhotosAlbum({
+          filePath: resp.tempFilePath,
           success: (resp) => {
             this.showToast('图片保存成功');
           },
@@ -317,16 +329,37 @@ Page({
         wx.showToast({
           title: '复制成功',
           icon: 'success',
-          duration: 2000
+          duration: 1000
         });
       },
       fail: function() {
         wx.showToast({
           title: '复制失败',
           icon: 'error',
-          duration: 2000
+          duration: 1000
         });
       },
+    });
+  },
+  bindPickerChange: function(e) {
+    console.log('picker发送选择改变，当前文件夹为', this.data.folder[e.detail.value])
+    this.setData({
+      index: e.detail.value,
+      layoutList: [],
+      albumList: [],
+    })
+    var self = this;
+    this.renderAlbumList();
+    this.getAlbumList(function(list) {
+      list = self.data.albumList.concat(list || {});
+      if (!list.length) {
+        list = [];
+      }
+      list = list.reverse();
+      self.setData({
+        'albumList': list
+      });
+      self.renderAlbumList();
     });
   },
 });

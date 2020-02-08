@@ -1,4 +1,5 @@
-<view class="wave"></view>
+<view class="top"></view>
+<view class="bottom"></view>
 <view class="main">
   <view class="page-title">文件上传</view>
   <view class="page-tips1">CDN流量仅有10G</view>
@@ -11,5 +12,5 @@
   <view class="page-btn-wrap">
     <button class="page-btn" bindtap="gotoAlbum">云相册</button>
   </view>
-  <view class="page-tips2">● 请不要当网盘用(T ^ T)</view>
+  <view class="page-tips2" style="margin-bottom:50rpx;">● 请不要当网盘用(T ^ T)</view>
 </view>

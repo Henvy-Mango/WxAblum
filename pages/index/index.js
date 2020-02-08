@@ -6,7 +6,7 @@ Page({
   onLoad: function() {},
   onShareAppMessage: function(res) {
     return {
-      title: 'Naomi 图床',
+      title: 'Naomi 相册',
       path: this.route,
     }
   },
