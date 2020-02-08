@@ -1,5 +1,11 @@
 <scroll-view class="container" scroll-y="true" style="display: {{!preview ? 'block' : 'none'}};">
-  <view class="upload-tips">上传图片到Naomi图床共享，长按图片可删除</view>
+  <view class="upload-tips" style="position:absolute;right:22rpx;">长按图片可下载删除</view>
+  <picker bindchange="bindPickerChange" value="{{index}}" range="{{folder}}">
+    <view class="upload-tips" style="margin-left:32rpx;">
+      当前文件夹：  {{folder[index]}}
+    </view>
+  </picker>
+
   <view class="album-container">
     <view class="item-group" wx:for="{{layoutList}}" wx:for-item="group" wx:for-index="rowIndex" wx:key="group">
       <block wx:for="{{group}}" wx:for-item="item" wx:for-index="cellIndex" wx:key="item">

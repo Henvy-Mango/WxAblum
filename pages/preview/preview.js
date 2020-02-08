@@ -12,7 +12,7 @@ Page({
       video: '视频',
     };
     var data = {
-      title: 'Naomi 图床' + (typeMap[this.data.type] || '文件'),
+      title: 'Naomi 相册' + (typeMap[this.data.type] || '文件'),
       path: this.route + '?type=' + this.data.type + '&url=' + encodeURIComponent(this.data.url),
     };
     if (this.data.type === 'image') {

@@ -5,7 +5,7 @@
     "pages/album/album"
   ],
   "window": {
-    "navigationBarTitleText": "Naomi 图床",
+    "navigationBarTitleText": "Naomi 相册",
     "navigationBarTextStyle": "white",
     "navigationBarBackgroundColor": "#373b3e"
   },
