@@ -1,8 +1,11 @@
 <scroll-view class="container" scroll-y="true" style="display: {{!preview ? 'block' : 'none'}};">
-  <view class="upload-tips" style="position:absolute;right:22rpx;">长按图片可下载删除</view>
-  <picker bindchange="bindPickerChange" value="{{index}}" range="{{folder}}">
+  <view class="upload-tips" style="position:fixed;bottom:0;display:flex;width:100%;justify-content:center;right:-27rpx;">长按图片可下载删除</view>
+  <checkbox-group class="upload-tips" style="position:absolute;right:15rpx;" bindchange="checkboxChange">
+  <checkbox value="deepFold" checked="true">深度遍历</checkbox>
+  </checkbox-group>
+  <picker bindchange="bindPickerChange" value="{{selectFolder}}" range="{{folder}}">
     <view class="upload-tips" style="margin-left:32rpx;">
-      当前文件夹：  {{folder[index]}}
+      当前文件夹：  {{folder[selectFolder]}}
     </view>
   </picker>
 

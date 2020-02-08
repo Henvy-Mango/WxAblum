@@ -32,7 +32,10 @@ Page({
 
     //文件夹选择器
     folder: ['/'],
-    index: 0,
+    selectFolder: 0,
+
+    //深度遍历
+    deeper: true,
 
     // 图片布局列表（二维数组，由`albumList`计算而得）
     layoutList: [],
@@ -135,15 +138,16 @@ Page({
     let that = this;
     this.showLoading('加载列表中…');
     setTimeout(() => this.hideLoading(), 300);
-    var prefix = that.data.folder[that.data.index];
+    var prefix = that.data.folder[that.data.selectFolder];
     if (prefix == '/')
       prefix = config.Prefix
-
+    var delimiter = that.data.deeper;
+    delimiter = delimiter ? config.Delimiter : '/';
     cos.getBucket({
       Bucket: config.Bucket,
       Region: config.Region,
       Prefix: prefix,
-      Delimiter: config.Delimiter,
+      Delimiter: delimiter,
     }, function(err, data) {
       if (data) {
         console.log(data)
@@ -344,7 +348,29 @@ Page({
   bindPickerChange: function(e) {
     console.log('picker发送选择改变，当前文件夹为', this.data.folder[e.detail.value])
     this.setData({
-      index: e.detail.value,
+      selectFolder: e.detail.value,
+      layoutList: [],
+      albumList: [],
+    })
+    var self = this;
+    this.renderAlbumList();
+    this.getAlbumList(function(list) {
+      list = self.data.albumList.concat(list || {});
+      if (!list.length) {
+        list = [];
+      }
+      list = list.reverse();
+      self.setData({
+        'albumList': list
+      });
+      self.renderAlbumList();
+    });
+  },
+  checkboxChange: function(e) {
+    console.log('checkbox发送选择改变，当前深度遍历为', e.detail.value != '' ? '开启' : '关闭')
+    this.data.deeper = e.detail.value != 'deepFold' ? false : true;
+    
+    this.setData({
       layoutList: [],
       albumList: [],
     })
