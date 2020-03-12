@@ -152,9 +152,10 @@ Page({
       if (data) {
         console.log(data)
         var list = (data && data.Contents || [])
-          .map(item => 'https://' + config.Bucket + '.cos.' + config.Region + '.myqcloud.com/' + util.camSafeUrlEncode(item.Key).replace(/%2F/g, '/')).filter(item => /\.(jpg|png|gif|jpeg|pjp|pjpeg|jfif)$/.test(item));
-        if (that.data.folder.length == 1)
-          that.data.folder.push((data && data.Contents || []).map(item => item.Key).filter(item => /^((?!\.).)*$/.test(item)));
+          .map(item => 'https://' + config.Bucket + '.cos.' + config.Region + '.myqcloud.com/' + util.camSafeUrlEncode(item.Key).replace(/%2F/g, '/')).filter(item => /\.(jpg|png|gif|jpeg|pjp|pjpeg|jfif|xbm|tif|svgz|webp|ico|bmp|svg)$/.test(item) && /^(?!.*CDN).*$/.test(item));
+        if (that.data.folder.length == 1) {
+          that.data.folder = that.data.folder.concat((data && data.Contents || []).map(item => item.Key).filter(item => /^((?!\.).)*$/.test(item) && /^(?!.*CDN).*$/.test(item)));
+        }
         callback(list);
       } else {
         callback([]);
@@ -369,7 +370,7 @@ Page({
   checkboxChange: function(e) {
     console.log('checkbox发送选择改变，当前深度遍历为', e.detail.value != '' ? '开启' : '关闭')
     this.data.deeper = e.detail.value != 'deepFold' ? false : true;
-    
+
     this.setData({
       layoutList: [],
       albumList: [],

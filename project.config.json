@@ -20,7 +20,7 @@
 		}
 	},
 	"compileType": "miniprogram",
-	"libVersion": "2.10.1",
+	"libVersion": "2.10.3",
 	"appid": "wxfbc5db33bd702838",
 	"projectname": "naomi-album",
 	"isGameTourist": false,
