@@ -4,26 +4,10 @@ const {
 var COS = require('../../lib/cos-wx-sdk-v5.js');
 const config = require('../../config.js');
 const util = require('../../lib/util.js');
+const app = getApp();
 
 
-var cos = new COS({
-  getAuthorization: function(options, callback) {
-    wx.request({
-      method: 'GET',
-      url: config.stsUrl, // 服务端签名，参考 server 目录下的两个签名例子
-      dataType: 'json',
-      success: function(result) {
-        var data = result.data;
-        callback({
-          TmpSecretId: data.credentials && data.credentials.tmpSecretId,
-          TmpSecretKey: data.credentials && data.credentials.tmpSecretKey,
-          XCosSecurityToken: data.credentials && data.credentials.sessionToken,
-          ExpiredTime: data.expiredTime,
-        });
-      }
-    });
-  },
-});
+var cos = app.globalData.tmp;
 
 Page({
   data: {
@@ -70,7 +54,7 @@ Page({
     // 切换动画的时间
     slideDuration: 400,
   },
-  onShareAppMessage: function(res) {
+  onShareAppMessage: function (res) {
     return {
       title: 'Naomi 云相册',
       path: this.route,
@@ -120,7 +104,7 @@ Page({
   onLoad() {
     var self = this;
     this.renderAlbumList();
-    this.getAlbumList(function(list) {
+    this.getAlbumList(function (list) {
       list = self.data.albumList.concat(list || {});
       if (!list.length) {
         list = [];
@@ -148,7 +132,7 @@ Page({
       Region: config.Region,
       Prefix: prefix,
       Delimiter: delimiter,
-    }, function(err, data) {
+    }, function (err, data) {
       if (data) {
         console.log(data)
         var list = (data && data.Contents || [])
@@ -187,17 +171,17 @@ Page({
       sourceType: ['album', 'camera'],
       success: (res) => {
         this.showLoading('正在上传图片…');
-        res.tempFilePaths.forEach(function(filePath) {
+        res.tempFilePaths.forEach(function (filePath) {
           var Key = config.albumDir + util.getRandFileName(filePath);
           filePath && cos.postObject({
             Bucket: config.Bucket,
             Region: config.Region,
             Key: Key,
             FilePath: filePath
-          }, function(err, data) {
+          }, function (err, data) {
             if (data) {
               let albumList = self.data.albumList;
-              debugger;
+              // debugger;
               albumList.unshift('https://' + data.Location);
               self.setData({
                 albumList
@@ -223,12 +207,12 @@ Page({
     this.setData({
       slideDuration: 0
     });
-    setTimeout(function() {
+    setTimeout(function () {
       self.setData({
         previewMode: true,
         previewIndex: previewIndex
       });
-      setTimeout(function() {
+      setTimeout(function () {
         self.setData({
           slideDuration: 400
         });
@@ -330,14 +314,14 @@ Page({
 
     wx.setClipboardData({
       data: tmp,
-      success: function() {
+      success: function () {
         wx.showToast({
           title: '复制成功',
           icon: 'success',
           duration: 1000
         });
       },
-      fail: function() {
+      fail: function () {
         wx.showToast({
           title: '复制失败',
           icon: 'error',
@@ -346,7 +330,7 @@ Page({
       },
     });
   },
-  bindPickerChange: function(e) {
+  bindPickerChange: function (e) {
     console.log('picker发送选择改变，当前文件夹为', this.data.folder[e.detail.value])
     this.setData({
       selectFolder: e.detail.value,
@@ -355,7 +339,7 @@ Page({
     })
     var self = this;
     this.renderAlbumList();
-    this.getAlbumList(function(list) {
+    this.getAlbumList(function (list) {
       list = self.data.albumList.concat(list || {});
       if (!list.length) {
         list = [];
@@ -367,7 +351,7 @@ Page({
       self.renderAlbumList();
     });
   },
-  checkboxChange: function(e) {
+  checkboxChange: function (e) {
     console.log('checkbox发送选择改变，当前深度遍历为', e.detail.value != '' ? '开启' : '关闭')
     this.data.deeper = e.detail.value != 'deepFold' ? false : true;
 
@@ -377,7 +361,7 @@ Page({
     })
     var self = this;
     this.renderAlbumList();
-    this.getAlbumList(function(list) {
+    this.getAlbumList(function (list) {
       list = self.data.albumList.concat(list || {});
       if (!list.length) {
         list = [];

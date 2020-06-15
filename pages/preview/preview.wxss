@@ -13,7 +13,7 @@
     border: 1px solid #ddd;
     padding: 16rpx;
     background: #f7f7f7;
-    word-break:break-all;
+    word-break: break-all;
     font-size: 32rpx;
     border-radius: 5rpx;
     margin-top: 40rpx;
@@ -32,18 +32,18 @@
 
 .preview-button {
     display: inline-block;
-    position:relative;
+    position: relative;
     text-align: center;
-    box-sizing:border-box;
-    font-size:32rpx;
-    text-decoration:none;
-    -webkit-tap-highlight-color:transparent;
-    overflow:hidden;
-    width:280rpx;
-    height:85rpx;
-    background-color:#fff;
-    color:#2277da;
-    line-height:85rpx;
+    box-sizing: border-box;
+    font-size: 32rpx;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    overflow: hidden;
+    width: 280rpx;
+    height: 85rpx;
+    background-color: #fff;
+    color: #2277da;
+    line-height: 85rpx;
     border-radius: 5rpx;
 }
 
@@ -66,7 +66,7 @@
 }
 
 .preview-image {
-    display:block;
+    display: block;
     margin: 0 auto;
     width: 590rpx;
     height: 590rpx;
@@ -74,7 +74,7 @@
 
 .preview-video {
     margin-top: 30rpx;
-    display:block;
+    display: block;
     margin: 0 auto;
     width: 590rpx;
     height: 415rpx;

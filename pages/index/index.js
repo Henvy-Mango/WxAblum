@@ -1,10 +1,14 @@
 var util = require('../../lib/util');
 var config = require('../../config');
 var cos = require('../../lib/cos');
+const app = getApp();
 
 Page({
-  onLoad: function() {},
-  onShareAppMessage: function(res) {
+  data: {
+    tmp: app.globalData.tmp,
+  },
+  onLoad: function () { },
+  onShareAppMessage: function (res) {
     return {
       title: 'Naomi 相册',
       path: this.route,
@@ -17,7 +21,7 @@ Page({
       camera: 'back',
       sizeType: ['original',],
       sourceType: ['album', 'camera'],
-      success: function(res) {
+      success: function (res) {
         var filePath = res.tempFilePaths[0];
         if (filePath) {
           var Key = util.getRandFileName(filePath);
@@ -29,7 +33,7 @@ Page({
             Region: config.Region,
             Key: Key,
             FilePath: filePath,
-          }, function(err, data) {
+          }, function (err, data) {
             wx.hideLoading();
             if (data && data.Location) {
               wx.navigateTo({
@@ -55,7 +59,7 @@ Page({
       sourceType: ['album', 'camera'],
       maxDuration: 60,
       camera: 'back',
-      success: function(res) {
+      success: function (res) {
         var filePath = res.tempFilePath;
         if (filePath) {
           var Key = util.getRandFileName(filePath);
@@ -67,7 +71,7 @@ Page({
             Region: config.Region,
             Key: Key,
             FilePath: filePath,
-          }, function(err, data) {
+          }, function (err, data) {
             wx.hideLoading();
             if (data && data.Location) {
               wx.navigateTo({
