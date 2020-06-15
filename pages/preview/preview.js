@@ -6,7 +6,7 @@ Page({
     view: '',
     showPreview: false,
   },
-  onShareAppMessage: function(res) {
+  onShareAppMessage: function (res) {
     var typeMap = {
       image: '图片',
       video: '视频',
@@ -41,14 +41,14 @@ Page({
   copyLink() {
     wx.setClipboardData({
       data: this.data.formatUrl || '',
-      success: function() {
+      success: function () {
         wx.showToast({
           title: '复制成功',
           icon: 'success',
           duration: 2000
         });
       },
-      fail: function() {
+      fail: function () {
         wx.showToast({
           title: '复制失败',
           icon: 'error',
@@ -60,7 +60,7 @@ Page({
   saveImage() {
     wx.downloadFile({
       url: this.data.url,
-      success: function(res) {
+      success: function (res) {
         // 只要服务器有响应数据，就会把响应内容写入文件并进入 success 回调，业务需要自行判断是否下载到了想要的内容
         if (res.statusCode === 200) {
           wx.saveImageToPhotosAlbum({
