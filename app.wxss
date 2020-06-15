@@ -1,6 +1,7 @@
 page {
     background-color: #fff;
 }
+
 .main {
     position: relative;
     z-index: 2;
