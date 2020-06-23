@@ -1,5 +1,5 @@
 <scroll-view class="container" scroll-y="true" style="display: {{!preview ? 'block' : 'none'}};">
-	<view class="upload-tips" style="position:fixed;bottom:0;display:flex;width:100%;justify-content:center;right:-27rpx;">长按图片可下载删除</view>
+	<view class="upload-tips" style="position:fixed;bottom:0;display:flex;width:100%;justify-content:center;right:-27rpx;">长按图片可弹出选项</view>
 	<checkbox-group class="upload-tips" style="position:absolute;right:15rpx;" bindchange="checkboxChange">
 		<checkbox value="deepFold" checked="true">深度遍历</checkbox>
 	</checkbox-group>
@@ -42,7 +42,7 @@
 <action-sheet hidden="{{!showActionsSheet}}" bindchange="hideActionSheet">
 	<action-sheet-item bindtap="copyLink">复制链接</action-sheet-item>
 	<action-sheet-item bindtap="downloadImage">保存到本地</action-sheet-item>
-	<action-sheet-item class="warn" bindtap="deleteImage">删除图片</action-sheet-item>
+	<!-- <action-sheet-item class="warn" bindtap="deleteImage">删除图片</action-sheet-item> -->
 	<action-sheet-cancel class="cancel">取消</action-sheet-cancel>
 </action-sheet>
 
