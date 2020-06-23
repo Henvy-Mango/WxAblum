@@ -7,7 +7,6 @@
 .album-container {
     margin: 3rpx;
     min-height: 242rpx;
-    margin-top: 83rpx;
 }
 
 .item-group {
