@@ -154,6 +154,7 @@ Page({
       Prefix: prefix,
       Marker: marker,
       Delimiter: delimiter,
+      MaxKeys: 200,
     }, function (err, data) {
       if (data) {
         console.log(data)
@@ -163,6 +164,7 @@ Page({
             marker: data.NextMarker
           })
         } else {
+          that.data.marker = 0
           that.setData({
             marker: 0
           })
@@ -181,10 +183,13 @@ Page({
     let layoutColumnSize = this.data.layoutColumnSize;
     let layoutList = [];
     var imageList = [].concat(this.data.albumList);
+
     imageList.unshift({
       type: 'add'
     });
-    layoutList = listToMatrix(imageList, layoutColumnSize);
+    
+    layoutList = listToMatrix(imageList, layoutColumnSize, this.data.marker);
+
     this.setData({
       layoutList,
     });
