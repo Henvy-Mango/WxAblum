@@ -1,7 +1,9 @@
 var util = require('../../lib/util');
 var config = require('../../config');
-var cos = require('../../lib/cos');
+var COS = require('../../lib/cos-wx-sdk-v5.js');
 const app = getApp();
+
+var cos = app.globalData.tmp;
 
 Page({
   data: {

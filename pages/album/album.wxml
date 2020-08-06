@@ -1,7 +1,7 @@
 <scroll-view class="container" scroll-y="true" style="display: {{!preview ? 'block' : 'none'}};">
 	<view class="upload-tips" style="position:fixed;bottom:0;display:flex;width:100%;justify-content:center;right:-27rpx;">长按图片可弹出选项</view>
 	<checkbox-group class="upload-tips" style="position:absolute;right:15rpx;" bindchange="checkboxChange">
-		<checkbox value="deepFold" checked="true">深度遍历</checkbox>
+		<checkbox value="deepFold">深度遍历</checkbox>
 	</checkbox-group>
 	<picker bindchange="bindPickerChange" value="{{selectFolder}}" range="{{folder}}">
 		<view class="upload-tips" style="margin-left:32rpx;">
@@ -21,7 +21,7 @@
 					</view>
 				</block>
 				<block wx:elif="{{item}}">
-					<image bindtap="enterPreviewMode" bindlongpress="showActions" data-src="{{item}}" class="album-item" src="{{item+'!preview'}}" mode="aspectFill"></image>
+					<image lazy-load="true" bindtap="enterPreviewMode" bindlongpress="showActions" data-src="{{item}}" class="album-item" src="{{item+'!preview'}}" mode="aspectFill"></image>
 				</block>
 				<block wx:else>
 					<view class="album-item empty"></view>
@@ -34,7 +34,7 @@
 <swiper class="swiper-container" duration="{{slideDuration}}" current="{{previewIndex}}" bindtap="leavePreviewMode" style="display: {{previewMode ? 'block' : 'none'}};">
 	<block wx:for="{{albumList}}" wx:for-item="item" wx:key="item">
 		<swiper-item>
-			<image src="{{item + '!weixin'}}" mode="aspectFit"></image>
+			<image lazy-load="true" src="{{item + '!weixin'}}" mode="aspectFit"></image>
 		</swiper-item>
 	</block>
 </swiper>
