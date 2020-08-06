@@ -21,6 +21,8 @@ Page({
     //深度遍历
     deeper: false,
 
+    marker: 0,
+
     // 图片布局列表（二维数组，由`albumList`计算而得）
     layoutList: [],
 
@@ -137,7 +139,7 @@ Page({
   },
 
   // 获取相册列表
-  getAlbumList(callback) {
+  getAlbumList(callback, marker = "") {
     let that = this;
     this.showLoading('加载列表中…');
     setTimeout(() => this.hideLoading(), 300);
@@ -150,11 +152,21 @@ Page({
       Bucket: config.Bucket,
       Region: config.Region,
       Prefix: prefix,
+      Marker: marker,
       Delimiter: delimiter,
-      MaxKeys: 200,
     }, function (err, data) {
       if (data) {
         console.log(data)
+        if (data.IsTruncated == "true") {
+          that.data.marker = data.NextMarker
+          that.setData({
+            marker: data.NextMarker
+          })
+        } else {
+          that.setData({
+            marker: 0
+          })
+        }
         var list = (data && data.Contents || [])
           .map(item => 'https://' + config.Bucket + '.cos.' + config.Region + '.myqcloud.com/' + util.camSafeUrlEncode(item.Key).replace(/%2F/g, '/')).filter(item => /\.(jpg|png|gif|jpeg|pjp|pjpeg|jfif|xbm|tif|svgz|webp|ico|bmp|svg)$/.test(item) && /^(?!.*CDN).*$/.test(item));
         callback(list);
@@ -174,7 +186,7 @@ Page({
     });
     layoutList = listToMatrix(imageList, layoutColumnSize);
     this.setData({
-      layoutList
+      layoutList,
     });
   },
 
@@ -322,6 +334,7 @@ Page({
       });
     }
   },
+
   copyLink() {
     let tmp = decodeURIComponent(this.data.imageInAction);
     tmp = tmp.substring(tmp.lastIndexOf('/') + 1, tmp.length);
@@ -346,6 +359,7 @@ Page({
       },
     });
   },
+
   bindPickerChange: function (e) {
     console.log('picker发送选择改变，当前文件夹为', this.data.folder[e.detail.value])
     this.setData({
@@ -367,6 +381,7 @@ Page({
       self.renderAlbumList();
     });
   },
+
   checkboxChange: function (e) {
     console.log('checkbox发送选择改变，当前深度遍历为', e.detail.value != '' ? '开启' : '关闭')
     this.data.deeper = e.detail.value != 'deepFold' ? false : true;
@@ -388,5 +403,26 @@ Page({
       });
       self.renderAlbumList();
     });
+  },
+
+  nextPage() {
+    console.log(this.data.marker)
+    this.setData({
+      layoutList: [],
+      albumList: [],
+    })
+    var self = this;
+    this.renderAlbumList();
+    this.getAlbumList(function (list) {
+      list = self.data.albumList.concat(list || {});
+      if (!list.length) {
+        list = [];
+      }
+      list = list.reverse();
+      self.setData({
+        'albumList': list
+      });
+      self.renderAlbumList();
+    }, self.data.marker);
   },
 });

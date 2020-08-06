@@ -12,6 +12,7 @@
 	<view class="album-container">
 		<view class="item-group" wx:for="{{layoutList}}" wx:for-item="group" wx:for-index="rowIndex" wx:key="group">
 			<block wx:for="{{group}}" wx:for-item="item" wx:for-index="cellIndex" wx:key="item">
+
 				<block wx:if="{{item.type==='add'}}">
 					<view class="upload-add-outer">
 						<view class="upload-add" bindtap="chooseImage">
@@ -20,12 +21,24 @@
 						</view>
 					</view>
 				</block>
+
 				<block wx:elif="{{item}}">
 					<image lazy-load="true" bindtap="enterPreviewMode" bindlongpress="showActions" data-src="{{item}}" class="album-item" src="{{item+'!preview'}}" mode="aspectFill"></image>
 				</block>
+
+				<block wx:elif="{{item===0 && group[cellIndex-1] && marker!=0}}">
+					<view class="upload-add-outer">
+						<view class="upload-add" bindtap="nextPage">
+							<image src="/images/next.gif" mode="aspectFit"></image>
+							<text>下一页</text>
+						</view>
+					</view>
+				</block>
+
 				<block wx:else>
 					<view class="album-item empty"></view>
 				</block>
+
 			</block>
 		</view>
 	</view>
@@ -34,7 +47,7 @@
 <swiper class="swiper-container" duration="{{slideDuration}}" current="{{previewIndex}}" bindtap="leavePreviewMode" style="display: {{previewMode ? 'block' : 'none'}};">
 	<block wx:for="{{albumList}}" wx:for-item="item" wx:key="item">
 		<swiper-item>
-			<image lazy-load="true" src="{{item + '!weixin'}}" mode="aspectFit"></image>
+			<image wx:if="{{previewMode}}" lazy-load="true" src="{{item + '!weixin'}}" mode="aspectFit"></image>
 		</swiper-item>
 	</block>
 </swiper>
