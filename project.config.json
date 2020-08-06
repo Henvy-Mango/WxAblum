@@ -3,7 +3,7 @@
 	"setting": {
 		"urlCheck": true,
 		"es6": true,
-		"enhance": false,
+		"enhance": true,
 		"postcss": true,
 		"preloadBackgroundData": false,
 		"minified": true,
@@ -16,6 +16,7 @@
 		"checkInvalidKey": true,
 		"checkSiteMap": true,
 		"uploadWithSourceMap": true,
+		"compileHotReLoad": false,
 		"babelSetting": {
 			"ignore": [],
 			"disablePlugins": [],
@@ -24,10 +25,11 @@
 		"useIsolateContext": true,
 		"useCompilerModule": false,
 		"userConfirmedUseCompilerModuleSwitch": false,
-		"compileHotReLoad": false
+		"packNpmManually": false,
+		"packNpmRelationList": []
 	},
 	"compileType": "miniprogram",
-	"libVersion": "2.10.4",
+	"libVersion": "2.11.3",
 	"appid": "wxfbc5db33bd702838",
 	"projectname": "naomi-album",
 	"isGameTourist": false,
