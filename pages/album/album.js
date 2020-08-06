@@ -19,7 +19,7 @@ Page({
     selectFolder: 0,
 
     //深度遍历
-    deeper: true,
+    deeper: false,
 
     // 图片布局列表（二维数组，由`albumList`计算而得）
     layoutList: [],
@@ -103,6 +103,7 @@ Page({
 
   onLoad() {
     var self = this;
+    this.getAlbumDir();
     this.renderAlbumList();
     this.getAlbumList(function (list) {
       list = self.data.albumList.concat(list || {});
@@ -115,6 +116,24 @@ Page({
       });
       self.renderAlbumList();
     });
+  },
+
+  getAlbumDir() {
+    let that = this;
+    cos.getBucket({
+      Bucket: config.Bucket,
+      Region: config.Region,
+      Prefix: "",
+      Delimiter: "/",
+    }, function (err, data) {
+      if (data) {
+        let list = data.CommonPrefixes.map(item => item.Prefix).filter(item => /^(?!.*CDN).*$/.test(item))
+        that.data.folder = that.data.folder.concat(list)
+        that.setData({
+          folder: that.data.folder
+        })
+      }
+    })
   },
 
   // 获取相册列表
@@ -132,14 +151,12 @@ Page({
       Region: config.Region,
       Prefix: prefix,
       Delimiter: delimiter,
+      MaxKeys: 200,
     }, function (err, data) {
       if (data) {
         console.log(data)
         var list = (data && data.Contents || [])
           .map(item => 'https://' + config.Bucket + '.cos.' + config.Region + '.myqcloud.com/' + util.camSafeUrlEncode(item.Key).replace(/%2F/g, '/')).filter(item => /\.(jpg|png|gif|jpeg|pjp|pjpeg|jfif|xbm|tif|svgz|webp|ico|bmp|svg)$/.test(item) && /^(?!.*CDN).*$/.test(item));
-        if (that.data.folder.length == 1) {
-          that.data.folder = that.data.folder.concat((data && data.Contents || []).map(item => item.Key).filter(item => /^((?!\.).)*$/.test(item) && /^(?!.*CDN).*$/.test(item)));
-        }
         callback(list);
       } else {
         callback([]);
@@ -157,8 +174,7 @@ Page({
     });
     layoutList = listToMatrix(imageList, layoutColumnSize);
     this.setData({
-      layoutList,
-      folder: this.data.folder
+      layoutList
     });
   },
 
@@ -172,7 +188,7 @@ Page({
       success: (res) => {
         this.showLoading('正在上传图片…');
         res.tempFilePaths.forEach(function (filePath) {
-          var Key = config.albumDir + util.getRandFileName(filePath);
+          var Key = util.getRandFileName(filePath);
           filePath && cos.postObject({
             Bucket: config.Bucket,
             Region: config.Region,
