@@ -1,5 +1,19 @@
+<view class="navigation-container" style="{{'height: ' + navigationBarAndStatusBarHeight}}">
+	<!--空白来占位状态栏-->
+	<view style="{{'height: ' + statusBarHeight}}"></view>
+	<!--自定义导航栏-->
+	<view class="navigation-bar" style="{{'height:' + navigationBarHeight}}">
+		<view bindtap="tapBackButton" class="navigation-buttons" style="{{'height:' + menuButtonHeight}}">
+			<image class="nav-img" src='/images/back.png' />
+		</view>
+		<view class="navigation-title" style="{{'line-height:' + navigationBarHeight}}">云相册</view>
+	</view>
+</view>
+<!--空白占位，占用空出的位置-->
+<view style="{{'height: ' + navigationBarAndStatusBarHeight}}; background: #ffffff"></view>
+
 <scroll-view class="container" scroll-y="true" style="display: {{!preview ? 'block' : 'none'}};">
-	<view class="upload-tips" style="position:fixed;bottom:0;display:flex;width:100%;justify-content:center;right:-27rpx;">长按图片可弹出选项</view>
+	<!-- <view class="upload-tips" style="position:fixed;bottom:0;display:flex;width:100%;justify-content:center;right:-27rpx;">长按图片可弹出选项</view> -->
 	<checkbox-group class="upload-tips" style="position:absolute;right:15rpx;" bindchange="checkboxChange">
 		<checkbox value="deepFold">深度遍历</checkbox>
 	</checkbox-group>
@@ -16,6 +30,7 @@
 				<block wx:if="{{item.type==='add'}}">
 					<view class="upload-add-outer">
 						<view class="upload-add" bindtap="chooseImage">
+							<a class="tips">可点击或长按图片</a>
 							<image src="/images/camera.png" mode="aspectFit"></image>
 							<text>上传图片</text>
 						</view>
@@ -39,7 +54,7 @@
 					<view class="upload-add-outer">
 						<view class="upload-add">
 							<image src="/images/done.png" mode="aspectFit"></image>
-							<text>没有更多图片</text>
+							<text style="font-size:36rpx;">没有更多图片</text>
 						</view>
 					</view>
 				</block>
@@ -56,13 +71,13 @@
 <swiper class="swiper-container" duration="{{slideDuration}}" current="{{previewIndex}}" bindtap="leavePreviewMode" style="display: {{previewMode ? 'block' : 'none'}};">
 	<block wx:for="{{albumList}}" wx:for-item="item" wx:key="item">
 		<swiper-item>
-			<image wx:if="{{previewMode}}" lazy-load="true" src="{{item + '!weixin'}}" mode="aspectFit"></image>
+			<image wx:if="{{previewMode}}" data-src="{{item}}" bindlongpress="showActions" lazy-load="true" src="{{item + '!weixin'}}" mode="aspectFit"></image>
 		</swiper-item>
 	</block>
 </swiper>
 
 <action-sheet hidden="{{!showActionsSheet}}" bindchange="hideActionSheet">
-	<action-sheet-item bindtap="copyLink">复制链接</action-sheet-item>
+	<action-sheet-item bindtap="copyLink">复制图片链接</action-sheet-item>
 	<action-sheet-item bindtap="downloadImage">保存到本地</action-sheet-item>
 	<!-- <action-sheet-item class="warn" bindtap="deleteImage">删除图片</action-sheet-item> -->
 	<action-sheet-cancel class="cancel">取消</action-sheet-cancel>
@@ -70,3 +85,8 @@
 
 <loading hidden="{{!showLoading}}" bindchange="hideLoading">{{loadingMessage}}</loading>
 <toast hidden="{{!showToast}}" duration="1000" bindchange="hideToast">{{toastMessage}}</toast>
+
+<mp-dialog title="返回首页" show="{{back}}" bindbuttontap="confirmBack" buttons="{{[{text: '取消'}, {text: '确认'}]}}">
+	<image src="/images/done.png" style="width:50px;height:50px;"/>
+	<view>真的要回去吗？</view>
+</mp-dialog>

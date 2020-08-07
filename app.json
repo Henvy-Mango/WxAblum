@@ -1,13 +1,16 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/preview/preview",
-    "pages/album/album"
+    "pages/album/album",
+    "pages/preview/preview"
   ],
   "window": {
-    "navigationBarTitleText": "Naomi 相册",
-    "navigationBarTextStyle": "white",
-    "navigationBarBackgroundColor": "#373b3e"
+    "navigationBarBackgroundColor": "#9dbdc6",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "Naomi 相册"
   },
-  "sitemapLocation": "sitemap.json"
+  "sitemapLocation": "sitemap.json",
+  "useExtendedLib": {
+    "weui": true
+  }
 }
