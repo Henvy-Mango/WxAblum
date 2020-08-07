@@ -115,6 +115,7 @@ Page({
 
   onLoad() {
     var self = this;
+    console.log(wx.getSystemInfoSync())
     const {
       statusBarHeight,
       platform,
@@ -125,6 +126,7 @@ Page({
       height
     } = wx.getMenuButtonBoundingClientRect()
 
+    wx.enableAlertBeforeUnload({message:"要返回首页吗？"})
     // 状态栏高度
     wx.setStorageSync('statusBarHeight', statusBarHeight)
     // 胶囊按钮高度 一般是32 如果获取不到就使用32
