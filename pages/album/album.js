@@ -64,7 +64,7 @@ Page({
     menuButtonHeight: wx.getStorageSync('menuButtonHeight') + 'px',
     // 导航栏和状态栏高度
     navigationBarAndStatusBarHeight: wx.getStorageSync('statusBarHeight') +
-      wx.getStorageSync('navigationBarHeight') + 3 + 'px'
+      wx.getStorageSync('navigationBarHeight') + 3 + 'px',
   },
   onShareAppMessage: function (res) {
     return {
@@ -117,7 +117,8 @@ Page({
     var self = this;
     const {
       statusBarHeight,
-      platform
+      platform,
+      screenHeight
     } = wx.getSystemInfoSync()
     const {
       top,
@@ -128,6 +129,8 @@ Page({
     wx.setStorageSync('statusBarHeight', statusBarHeight)
     // 胶囊按钮高度 一般是32 如果获取不到就使用32
     wx.setStorageSync('menuButtonHeight', height ? height : 32)
+
+    wx.setStorageSync('screenHeight', screenHeight)
 
     // 判断胶囊按钮信息是否成功获取
     if (top && top !== 0 && height && height !== 0) {
@@ -483,4 +486,12 @@ Page({
       self.renderAlbumList();
     }, self.data.marker);
   },
+
+  goTop: function () {
+    wx.pageScrollTo({
+      scrollTop: 0,
+      duration: 500
+    })
+    this.hideActionSheet()
+  }
 });
