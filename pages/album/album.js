@@ -55,6 +55,16 @@ Page({
 
     // 切换动画的时间
     slideDuration: 400,
+
+    // 状态栏高度
+    statusBarHeight: wx.getStorageSync('statusBarHeight') + 'px',
+    // 导航栏高度
+    navigationBarHeight: wx.getStorageSync('navigationBarHeight') + 'px',
+    // 胶囊按钮高度
+    menuButtonHeight: wx.getStorageSync('menuButtonHeight') + 'px',
+    // 导航栏和状态栏高度
+    navigationBarAndStatusBarHeight: wx.getStorageSync('statusBarHeight') +
+      wx.getStorageSync('navigationBarHeight') + 3 + 'px'
   },
   onShareAppMessage: function (res) {
     return {
@@ -105,6 +115,32 @@ Page({
 
   onLoad() {
     var self = this;
+    const {
+      statusBarHeight,
+      platform
+    } = wx.getSystemInfoSync()
+    const {
+      top,
+      height
+    } = wx.getMenuButtonBoundingClientRect()
+
+    // 状态栏高度
+    wx.setStorageSync('statusBarHeight', statusBarHeight)
+    // 胶囊按钮高度 一般是32 如果获取不到就使用32
+    wx.setStorageSync('menuButtonHeight', height ? height : 32)
+
+    // 判断胶囊按钮信息是否成功获取
+    if (top && top !== 0 && height && height !== 0) {
+      const navigationBarHeight = (top - statusBarHeight) * 2 + height
+      // 导航栏高度
+      wx.setStorageSync('navigationBarHeight', navigationBarHeight)
+    } else {
+      wx.setStorageSync(
+        'navigationBarHeight',
+        platform === 'android' ? 48 : 40
+      )
+    }
+
     this.getAlbumDir();
     this.renderAlbumList();
     this.getAlbumList(function (list) {
@@ -118,6 +154,23 @@ Page({
       });
       self.renderAlbumList();
     });
+  },
+
+  tapBackButton() {
+    this.setData({
+      back: true
+    })
+  },
+
+  confirmBack(e) {
+    if (e.detail.item.text == "取消")
+      this.setData({
+        back: false
+      })
+    else if (e.detail.item.text == "确认")
+      wx.navigateBack({
+        delta: 1,
+      })
   },
 
   getAlbumDir() {
@@ -187,7 +240,7 @@ Page({
     imageList.unshift({
       type: 'add'
     });
-    
+
     layoutList = listToMatrix(imageList, layoutColumnSize, this.data.marker);
 
     this.setData({
