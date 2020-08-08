@@ -1,4 +1,4 @@
-<canvas canvas-id='canvas' style="width:{{cWidth}}px;height:{{cHeight}}px;"></canvas>
+<canvas wx:for='{{upload}}' wx:for-index="index" canvas-id='canvas-{{index}}' wx:key="index" style="width:{{cWidth}}px;height:{{cHeight}}px;position:absolute;top:-999999px;left:-999999px;"></canvas>
 <view class="navigation-container" style="{{'height: ' + navigationBarAndStatusBarHeight}}">
 	<!--空白来占位状态栏-->
 	<view style="{{'height: ' + statusBarHeight}}"></view>

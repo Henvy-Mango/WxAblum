@@ -30,7 +30,7 @@ Page({
         });
         var filePath = res.tempFilePaths[0];
         that.getCanvasImg(res.tempFilePaths).then(res => {
-          setTimeout(util.checkSafePic(res).then(
+          util.checkSafePic(res).then(
             res => {
               if (res) {
                 //图片正常
@@ -64,7 +64,7 @@ Page({
                 });
               }
             }
-          ), 300)
+          )
         }
         )
       }
@@ -126,7 +126,7 @@ Page({
           var ratio = 2;
           var canvasWidth = res.width //图片原始长宽
           var canvasHeight = res.height
-          while (canvasWidth > 400 || canvasHeight > 400) { // 保证宽高在400以内
+          while (canvasWidth > 120 || canvasHeight > 120) { // 保证宽高在400以内
             canvasWidth = Math.trunc(res.width / ratio)
             canvasHeight = Math.trunc(res.height / ratio)
             ratio++;
