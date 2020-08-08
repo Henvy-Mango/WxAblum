@@ -1,6 +1,3 @@
-const {
-  listToMatrix
-} = require('../../lib/util.js');
 var COS = require('../../lib/cos-wx-sdk-v5.js');
 const config = require('../../config.js');
 const util = require('../../lib/util.js');
@@ -126,7 +123,9 @@ Page({
       height
     } = wx.getMenuButtonBoundingClientRect()
 
-    wx.enableAlertBeforeUnload({message:"要返回首页吗？"})
+    wx.enableAlertBeforeUnload({
+      message: "要返回首页吗？"
+    })
     // 状态栏高度
     wx.setStorageSync('statusBarHeight', statusBarHeight)
     // 胶囊按钮高度 一般是32 如果获取不到就使用32
@@ -246,7 +245,7 @@ Page({
       type: 'add'
     });
 
-    layoutList = listToMatrix(imageList, layoutColumnSize, this.data.marker);
+    layoutList = util.listToMatrix(imageList, layoutColumnSize, this.data.marker);
 
     this.setData({
       layoutList,
@@ -262,27 +261,51 @@ Page({
       sourceType: ['album', 'camera'],
       success: (res) => {
         this.showLoading('正在上传图片…');
+
         res.tempFilePaths.forEach(function (filePath) {
-          var Key = util.getRandFileName(filePath);
-          filePath && cos.postObject({
-            Bucket: config.Bucket,
-            Region: config.Region,
-            Key: Key,
-            FilePath: filePath
-          }, function (err, data) {
-            if (data) {
-              let albumList = self.data.albumList;
-              // debugger;
-              albumList.unshift('https://' + data.Location);
-              self.setData({
-                albumList
-              });
-              self.renderAlbumList();
+          self.getCanvasImg(filePath).then(
+            res => {
+              console.log(res)
+              util.checkSafePic(res).then(res => {
+                if (res) {
+                  var Key = util.getRandFileName(filePath);
+                  filePath && cos.postObject({
+                    Bucket: config.Bucket,
+                    Region: config.Region,
+                    Key: Key,
+                    FilePath: filePath
+                  }, function (err, data) {
+                    if (data) {
+                      let albumList = self.data.albumList;
+                      // debugger;
+                      albumList.unshift('https://' + data.Location);
+                      self.setData({
+                        albumList
+                      });
+                      self.renderAlbumList();
+                    }
+                    self.hideLoading();
+                  });
+                } else {
+                  self.hideLoading()
+                  wx.showToast({
+                    title: "图片违法违规",
+                    icon: 'none',
+                    duration: 3000
+                  })
+                }
+              })
+            }, err => {
+              self.hideLoading()
             }
-            self.hideLoading();
-          });
+          )
+
+
         });
-      },
+      }, fail: (err) => {
+        console.log(err)
+        self.hideLoading();
+      }
     });
   },
 
@@ -495,5 +518,56 @@ Page({
       duration: 500
     })
     this.hideActionSheet()
+  },
+
+  //压缩并获取图片，这里用了递归的方法来解决canvas的draw方法延时的问题
+  getCanvasImg: function (tempFilePaths) {
+    var that = this;
+    return new Promise(function (resolve, reject) {
+      //-----返回选定照片的本地文件路径列表，获取照片信息-----------
+      wx.getImageInfo({
+        src: tempFilePaths,
+        success: function (res) {
+          //---------利用canvas压缩图片--------------
+          var ratio = 2;
+          var canvasWidth = res.width //图片原始长宽
+          var canvasHeight = res.height
+          while (canvasWidth > 400 || canvasHeight > 400) { // 保证宽高在400以内
+            canvasWidth = Math.trunc(res.width / ratio)
+            canvasHeight = Math.trunc(res.height / ratio)
+            ratio++;
+          }
+          console.log("图片压缩后大小为" + canvasWidth + "x" + canvasHeight)
+          that.setData({
+            cWidth: canvasWidth,
+            cHeight: canvasHeight
+          })
+
+          //----------绘制图形并取出图片路径--------------
+          var ctx = wx.createCanvasContext('canvas')
+          ctx.drawImage(res.path, 0, 0, canvasWidth, canvasHeight)
+          ctx.draw(false, setTimeout(function () {
+            wx.canvasToTempFilePath({
+              canvasId: 'canvas',
+              destWidth: canvasWidth,
+              destHeight: canvasHeight,
+              quality: 0.8,
+              success: function (res) {
+                //最终图片路径
+                console.log(res)
+                resolve(res.tempFilePath)
+              },
+              fail: function (res) {
+                console.log(res.errMsg)
+              }
+            })
+          }, 300))
+        }, //留一定的时间绘制canvas
+        fail: function (res) {
+          console.log(res.errMsg)
+          reject(res)
+        }
+      })
+    })
   }
 });
