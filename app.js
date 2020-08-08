@@ -11,6 +11,7 @@ App({
    */
   onLaunch: function () {
     this.globalData.tmp = cos.get();
+    wx.cloud.init()
   },
 
   /**

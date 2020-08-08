@@ -18,38 +18,55 @@ Page({
   },
   // 前往相册页
   uploadImage() {
+    var that = this
     wx.chooseImage({
       count: 1,
       camera: 'back',
-      sizeType: ['original',],
+      sizeType: ['original', 'compressed'],
       sourceType: ['album', 'camera'],
       success: function (res) {
+        wx.showLoading({
+          title: '正在上传...',
+        });
         var filePath = res.tempFilePaths[0];
-        if (filePath) {
-          var Key = util.getRandFileName(filePath);
-          wx.showLoading({
-            title: '正在上传...'
-          });
-          cos.postObject({
-            Bucket: config.Bucket,
-            Region: config.Region,
-            Key: Key,
-            FilePath: filePath,
-          }, function (err, data) {
-            wx.hideLoading();
-            if (data && data.Location) {
-              wx.navigateTo({
-                url: '../preview/preview?type=image&url=' + encodeURIComponent('https://' + data.Location)
-              });
-            } else {
-              wx.showToast({
-                title: '上传失败',
-                icon: 'error',
-                duration: 2000
-              });
+        that.getCanvasImg(res.tempFilePaths).then(res => {
+          setTimeout(util.checkSafePic(res).then(
+            res => {
+              if (res) {
+                //图片正常
+                if (filePath) {
+                  var Key = util.getRandFileName(filePath);
+                  cos.postObject({
+                    Bucket: config.Bucket,
+                    Region: config.Region,
+                    Key: Key,
+                    FilePath: filePath,
+                  }, function (err, data) {
+                    wx.hideLoading();
+                    if (data && data.Location) {
+                      wx.navigateTo({
+                        url: '../preview/preview?type=image&url=' + encodeURIComponent('https://' + data.Location)
+                      });
+                    } else {
+                      wx.showToast({
+                        title: '上传失败',
+                        icon: 'error',
+                        duration: 3000
+                      });
+                    }
+                  });
+                }
+              } else {
+                wx.showToast({
+                  title: '图片违法违规',
+                  icon: 'none',
+                  duration: 3000
+                });
+              }
             }
-          });
+          ), 300)
         }
+        )
       }
     })
   },
@@ -82,8 +99,8 @@ Page({
             } else {
               wx.showToast({
                 title: '上传失败',
-                icon: 'error',
-                duration: 2000
+                icon: 'none',
+                duration: 3000
               });
             }
           });
@@ -97,4 +114,52 @@ Page({
       url: '../album/album'
     });
   },
-});
+  //压缩并获取图片，这里用了递归的方法来解决canvas的draw方法延时的问题
+  getCanvasImg: function (tempFilePaths) {
+    var that = this;
+    return new Promise(function (resolve, reject) {
+      //-----返回选定照片的本地文件路径列表，获取照片信息-----------
+      wx.getImageInfo({
+        src: tempFilePaths[0],
+        success: function (res) {
+          //---------利用canvas压缩图片--------------
+          var ratio = 2;
+          var canvasWidth = res.width //图片原始长宽
+          var canvasHeight = res.height
+          while (canvasWidth > 400 || canvasHeight > 400) { // 保证宽高在400以内
+            canvasWidth = Math.trunc(res.width / ratio)
+            canvasHeight = Math.trunc(res.height / ratio)
+            ratio++;
+          }
+          console.log("图片压缩后大小为" + canvasWidth + "x" + canvasHeight)
+          that.setData({
+            cWidth: canvasWidth,
+            cHeight: canvasHeight
+          })
+
+          //----------绘制图形并取出图片路径--------------
+          var ctx = wx.createCanvasContext('canvas')
+          ctx.drawImage(res.path, 0, 0, canvasWidth, canvasHeight)
+          ctx.draw(false, setTimeout(function () {
+            wx.canvasToTempFilePath({
+              canvasId: 'canvas',
+              destWidth: canvasWidth,
+              destHeight: canvasHeight,
+              success: function (res) {
+                //最终图片路径
+                resolve(res.tempFilePath)
+              },
+              fail: function (res) {
+                console.log(res.errMsg)
+              }
+            })
+          }, 100))
+        }, //留一定的时间绘制canvas
+        fail: function (res) {
+          console.log(res.errMsg)
+          reject(res)
+        }
+      })
+    })
+  }
+})
