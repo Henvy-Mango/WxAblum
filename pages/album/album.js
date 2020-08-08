@@ -171,10 +171,12 @@ Page({
       this.setData({
         back: false
       })
-    else if (e.detail.item.text == "确认")
+    else if (e.detail.item.text == "确认") {
+      wx.disableAlertBeforeUnload()
       wx.navigateBack({
         delta: 1,
       })
+    }
   },
 
   getAlbumDir() {
@@ -260,10 +262,13 @@ Page({
       sizeType: ['original', 'compressed'],
       sourceType: ['album', 'camera'],
       success: (res) => {
-        this.showLoading('正在上传图片…');
+        self.showLoading('正在上传图片…');
+        self.setData({
+          upload: res.tempFilePaths
+        })
 
-        res.tempFilePaths.forEach(function (filePath) {
-          self.getCanvasImg(filePath).then(
+        res.tempFilePaths.forEach(function (filePath, index) {
+          self.getCanvasImg(filePath, index).then(
             res => {
               console.log(res)
               util.checkSafePic(res).then(res => {
@@ -289,7 +294,7 @@ Page({
                 } else {
                   self.hideLoading()
                   wx.showToast({
-                    title: "图片违法违规",
+                    title: "第" + (index + 1).toString() + "张图片不合法",
                     icon: 'none',
                     duration: 3000
                   })
@@ -520,8 +525,8 @@ Page({
     this.hideActionSheet()
   },
 
-  //压缩并获取图片，这里用了递归的方法来解决canvas的draw方法延时的问题
-  getCanvasImg: function (tempFilePaths) {
+  //压缩并获取图片
+  getCanvasImg: function (tempFilePaths, index) {
     var that = this;
     return new Promise(function (resolve, reject) {
       //-----返回选定照片的本地文件路径列表，获取照片信息-----------
@@ -532,7 +537,7 @@ Page({
           var ratio = 2;
           var canvasWidth = res.width //图片原始长宽
           var canvasHeight = res.height
-          while (canvasWidth > 400 || canvasHeight > 400) { // 保证宽高在400以内
+          while (canvasWidth > 120 || canvasHeight > 120) { // 保证宽高在400以内
             canvasWidth = Math.trunc(res.width / ratio)
             canvasHeight = Math.trunc(res.height / ratio)
             ratio++;
@@ -544,24 +549,26 @@ Page({
           })
 
           //----------绘制图形并取出图片路径--------------
-          var ctx = wx.createCanvasContext('canvas')
-          ctx.drawImage(res.path, 0, 0, canvasWidth, canvasHeight)
-          ctx.draw(false, setTimeout(function () {
-            wx.canvasToTempFilePath({
-              canvasId: 'canvas',
-              destWidth: canvasWidth,
-              destHeight: canvasHeight,
-              quality: 0.8,
-              success: function (res) {
-                //最终图片路径
-                console.log(res)
-                resolve(res.tempFilePath)
-              },
-              fail: function (res) {
-                console.log(res.errMsg)
-              }
-            })
-          }, 300))
+          var ctx = wx.createCanvasContext('canvas-' + index)
+          new Promise(() => ctx.drawImage(res.path, 0, 0, canvasWidth, canvasHeight)).then(
+            ctx.draw(setTimeout(function () {
+              wx.canvasToTempFilePath({
+                canvasId: 'canvas-' + index,
+                destWidth: canvasWidth,
+                destHeight: canvasHeight,
+                quality: 0.8,
+                success: function (res) {
+                  //最终图片路径
+                  console.log(res)
+                  resolve(res.tempFilePath)
+                },
+                fail: function (res) {
+                  console.log(res.errMsg)
+                }
+              }, self)
+            }, 300))
+          )
+
         }, //留一定的时间绘制canvas
         fail: function (res) {
           console.log(res.errMsg)

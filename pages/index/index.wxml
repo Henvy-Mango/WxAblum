@@ -1,4 +1,4 @@
-<canvas canvas-id='canvas' style="width:{{cWidth}}px;height:{{cHeight}}px;"></canvas>
+<canvas canvas-id='canvas' style="width:{{cWidth}}px;height:{{cHeight}}px;position:absolute;top:-999999px;left:-999999px;"></canvas>
 <view class="top"></view>
 <view class="bottom"></view>
 <view class="main">
