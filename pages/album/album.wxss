@@ -77,24 +77,23 @@
     position: absolute;
     left: 0;
     width: 240rpx;
-    height: 2.6rem;
-    top: 1.8rem;
+    height: 100rpx;
+    top: 70rpx;
 }
 
 .upload-add text {
     position: absolute;
     width: 240rpx;
-    height: 2rem;
+    height: 30rpx;
     left: 0;
-    top: 1.8rem;
+    top: 80rpx;
     color: #888;
 }
 
 .tips {
-    position: absolute;
+    position: relative;
     width: 240rpx;
-    left: 0;
-    top: -2.6rem;
+    bottom: 85rpx;
     font-size: 24rpx;
     color: #888;
 }
@@ -117,16 +116,16 @@
     position: absolute;
     left: 0;
     width: 242rpx;
-    height: 2.6rem;
-    top: 1.2rem;
+    height: 200rpx;
+    top: 200rpx;
 }
 
 .upload-image text {
     position: absolute;
     width: 242rpx;
-    height: 2rem;
+    height: 50rpx;
     left: 0;
-    top: 1.6rem;
+    bottom: 20rpx;
     color: #888;
 }
 
@@ -190,4 +189,22 @@ action-sheet-item.warn {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.loading {
+    height: 30px;
+    background: #eff3f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading image {
+    width: 25px;
+    height: 25px;
+}
+
+.loading text {
+    font-size: 15px;
+    color: #888;
 }
