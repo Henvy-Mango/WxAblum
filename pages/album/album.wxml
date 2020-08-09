@@ -1,5 +1,8 @@
-<canvas wx:for='{{upload}}' wx:for-index="index" canvas-id='canvas-{{index}}' wx:key="index" style="width:{{cWidth}}px;height:{{cHeight}}px;position:absolute;top:-999999px;left:-999999px;"></canvas>
-<view class="navigation-container" style="{{'height: ' + navigationBarAndStatusBarHeight}}">
+<!-- 压缩图片用的画布 -->
+<canvas wx:for='{{upload}}' wx:for-index="index" canvas-id='canvas-{{index}}' wx:key="index" style="width:{{item.canvasWidth}}px;height:{{item.canvasHeight}}px;position:absolute;top:-999999px;left:-999999px;"></canvas>
+
+<!-- 自定义导航栏 -->
+<view wx:if="{{!previewMode}}" class="navigation-container" style="{{'height: ' + navigationBarAndStatusBarHeight}}">
 	<!--空白来占位状态栏-->
 	<view style="{{'height: ' + statusBarHeight}}"></view>
 	<!--自定义导航栏-->
@@ -10,11 +13,18 @@
 		<view class="navigation-title" style="{{'line-height:' + navigationBarHeight}}">云相册</view>
 	</view>
 </view>
+
 <!--空白占位，占用空出的位置-->
 <view style="{{'height: ' + navigationBarAndStatusBarHeight}}; background: #ffffff"></view>
 
+<!-- 加载框 -->
+<view wx:if="{{loading}}" class="loading">
+	<image src="/images/loading.gif" mode="aspectFit" />
+	<text decode="true">&nbsp;加载中……</text>
+</view>
+
+<!-- 图片列表容器 -->
 <scroll-view class="container" scroll-y="true" style="display: {{!preview ? 'block' : 'none'}};">
-	<!-- <view class="upload-tips" style="position:fixed;bottom:0;display:flex;width:100%;justify-content:center;right:-27rpx;">长按图片可弹出选项</view> -->
 	<checkbox-group class="upload-tips" style="position:absolute;right:15rpx;" bindchange="checkboxChange">
 		<checkbox value="deepFold">深度遍历</checkbox>
 	</checkbox-group>
@@ -31,7 +41,7 @@
 				<block wx:if="{{item.type==='add'}}">
 					<view class="upload-add-outer">
 						<view class="upload-add" bindtap="chooseImage">
-							<a class="tips">可点击或长按图片</a>
+							<a class="tips">点击或长按图片</a>
 							<image src="/images/camera.png" mode="aspectFit"></image>
 							<text>上传图片</text>
 						</view>
@@ -69,6 +79,7 @@
 	</view>
 </scroll-view>
 
+<!-- 预览模式 -->
 <swiper class="swiper-container" duration="{{slideDuration}}" current="{{previewIndex}}" bindtap="leavePreviewMode" style="display: {{previewMode ? 'block' : 'none'}};">
 	<block wx:for="{{albumList}}" wx:for-item="item" wx:key="item">
 		<swiper-item>
@@ -77,17 +88,14 @@
 	</block>
 </swiper>
 
-<action-sheet hidden="{{!showActionsSheet}}" bindchange="hideActionSheet">
-	<action-sheet-item wx:if="{{!previewMode}}" bindtap="goTop">返回顶部</action-sheet-item>
-	<action-sheet-item bindtap="copyLink">复制图片链接</action-sheet-item>
-	<action-sheet-item bindtap="downloadImage">保存到本地</action-sheet-item>
-	<!-- <action-sheet-item class="warn" bindtap="deleteImage">删除图片</action-sheet-item> -->
-	<action-sheet-cancel class="cancel">取消</action-sheet-cancel>
-</action-sheet>
+<!-- 选项菜单 -->
+<mp-actionSheet bindactiontap="btnClick" show="{{showActionSheet}}" actions="{{Actions}}" bindclose="hideActionSheet" cancel-text="返回">
+</mp-actionSheet>
 
-<loading hidden="{{!showLoading}}" bindchange="hideLoading">{{loadingMessage}}</loading>
-<toast hidden="{{!showToast}}" duration="1000" bindchange="hideToast">{{toastMessage}}</toast>
+<!-- Toast消息框 -->
+<mp-toptips msg="{{message.text}}" type="{{message.type}}" show="{{message.enable}}" delay="{{message.delay}}" bindhide="messageGone"></mp-toptips>
 
+<!-- 返回对话框 -->
 <mp-dialog title="返回首页" show="{{back}}" bindbuttontap="confirmBack" buttons="{{[{text: '取消'}, {text: '确认'}]}}">
 	<image src="/images/done.png" style="width:50px;height:50px;" />
 	<view>真的要回去吗？</view>
