@@ -1,14 +1,11 @@
 var util = require('../../lib/util');
 var config = require('../../config');
-var COS = require('../../lib/cos-wx-sdk-v5.js');
 const app = getApp();
 
-var cos = app.globalData.tmp;
+var cos = app.globalData.cos;
 
 Page({
-  data: {
-    tmp: app.globalData.tmp,
-  },
+  data: {},
   onLoad: function () { },
   onShareAppMessage: function (res) {
     return {
