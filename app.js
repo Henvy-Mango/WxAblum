@@ -1,4 +1,4 @@
-import { promisifyAll } from './lib/api-promise/promise';
+import { promisifyAll } from './lib/promise/promise';
 
 var COS = require('./lib/cos.js');
 const app = getApp();

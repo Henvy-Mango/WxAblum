@@ -18,65 +18,67 @@ Page({
 
   // 前往相册页
   uploadImage() {
-    var that = this
+    var that = this;
+    that.setData({
+      message: {
+        enable: true,
+        type: "info",
+        text: "正在上传图片…",
+        delay: 3000,
+      },
+    });
     wx.chooseImage({
       count: 1,
       camera: 'back',
       sizeType: ['original', 'compressed'],
       sourceType: ['album', 'camera'],
-    }).then(res => {
-      var filePath = res.tempFilePaths[0];
-      that.getCanvasDetail(filePath)
-        .then(res => that.getCanvasImg(res))
-        .then(res => util.checkSafePic(res))
-        .then(res => {
-          if (res) {
-            //图片正常
-            if (filePath) {
-              var Key = util.getRandFileName(filePath);
-              cos.postObject({
-                Bucket: config.Bucket,
-                Region: config.Region,
-                Key: Key,
-                FilePath: filePath,
-              }, function (err, data) {
-                that.setData({
-                  message: {
-                    enable: true,
-                    type: "info",
-                    text: "正在上传图片…",
-                    delay: 3000,
-                  },
-                })
-                if (data && data.Location) {
-                  wx.navigateTo({
-                    url: '../preview/preview?type=image&url=' + encodeURIComponent('https://' + data.Location)
-                  });
-                } else {
-                  that.setData({
-                    message: {
-                      enable: true,
-                      type: "error",
-                      text: "上传失败",
-                      delay: 3000,
-                    },
-                  })
-                }
-              });
+      success: res => {
+        var filePath = res.tempFilePaths[0];
+        that.getCanvasDetail(filePath)
+          .then(res => that.getCanvasImg(res))
+          .then(res => util.checkSafePic(res))
+          .then(res => {
+            if (res) {
+              //图片正常
+              if (filePath) {
+                var Key = util.getRandFileName(filePath);
+                cos.postObject({
+                  Bucket: config.Bucket,
+                  Region: config.Region,
+                  Key: Key,
+                  FilePath: filePath,
+                }, function (err, data) {
+                  if (data && data.Location) {
+                    wx.navigateTo({
+                      url: '../preview/preview?type=image&url=' + encodeURIComponent('https://' + data.Location)
+                    });
+                  } else {
+                    that.setData({
+                      message: {
+                        enable: true,
+                        type: "error",
+                        text: "上传失败",
+                        delay: 3000,
+                      },
+                    })
+                  }
+                });
+              }
+            } else {
+              that.setData({
+                message: {
+                  enable: true,
+                  type: "error",
+                  text: "图片违规违法",
+                  delay: 3000,
+                },
+              })
             }
-          } else {
-            that.setData({
-              message: {
-                enable: true,
-                type: "error",
-                text: "图片违规违法",
-                delay: 3000,
-              },
-            })
-          }
-        })
-    })
+          })
+      }
+    });
   },
+
   // 前往相册页
   uploadVideo() {
     wx.chooseVideo({

@@ -1,3 +1,10 @@
+.top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 .preview {
     width: 100%;
     height: 100%;
@@ -5,28 +12,12 @@
 }
 
 .preview-success {
-    display: inline-block;
+    margin-top: 22rpx;
     font-size: 40rpx;
 }
 
-.preview-url {
-    border: 1px solid #ddd;
-    padding: 16rpx;
-    background: #f7f7f7;
-    word-break: break-all;
-    font-size: 32rpx;
-    border-radius: 5rpx;
-    margin-top: 40rpx;
-}
-
-.preview-tips {
-    margin-top: 20rpx;
-    font-size: 30rpx;
-    color: #888;
-}
-
 .preview-button-wrap {
-    margin-top: 30rpx;
+    margin-top: 70rpx;
     text-align: left;
 }
 
@@ -39,10 +30,10 @@
     text-decoration: none;
     -webkit-tap-highlight-color: transparent;
     overflow: hidden;
-    width: 280rpx;
+    width: 288rpx;
     height: 85rpx;
-    background-color: #fff;
-    color: #2277da;
+    background-color: #eff3f5;
+    color: #f5756c;
     line-height: 85rpx;
     border-radius: 5rpx;
 }

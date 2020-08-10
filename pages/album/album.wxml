@@ -1,5 +1,5 @@
 <!-- 压缩图片用的画布 -->
-<canvas wx:for='{{upload}}' wx:for-index="index" canvas-id='canvas-{{index}}' wx:key="index" style="width:{{item.canvasWidth}}px;height:{{item.canvasHeight}}px;position:absolute;top:-999999px;left:-999999px;"></canvas>
+<canvas wx:for='{{upload}}' wx:for-index="index" type="2d" id='canvas-{{index}}' wx:key="index" style="width:{{item.canvasWidth}}px;height:{{item.canvasHeight}}px;position:absolute;top:-999999px;left:-999999px;"></canvas>
 
 <!-- 自定义导航栏 -->
 <view wx:if="{{!previewMode}}" class="navigation-container" style="{{'height: ' + navigationBarAndStatusBarHeight}}">
@@ -18,9 +18,9 @@
 <view style="{{'height: ' + navigationBarAndStatusBarHeight}}; background: #ffffff"></view>
 
 <!-- 加载框 -->
-<view wx:if="{{loading}}" class="loading">
+<view wx:if="{{loading.enable}}" class="loading">
 	<image src="/images/loading.gif" mode="aspectFit" />
-	<text decode="true">&nbsp;加载中……</text>
+	<text decode="true">&nbsp;{{loading.text}}……</text>
 </view>
 
 <!-- 图片列表容器 -->
@@ -93,7 +93,7 @@
 </mp-actionSheet>
 
 <!-- Toast消息框 -->
-<mp-toptips msg="{{message.text}}" type="{{message.type}}" show="{{message.enable}}" delay="{{message.delay}}" bindhide="messageGone"></mp-toptips>
+<mp-toptips msg="{{message.text}}" type="{{message.type}}" show="{{message.enable}}" delay="{{message.delay}}"></mp-toptips>
 
 <!-- 返回对话框 -->
 <mp-dialog title="返回首页" show="{{back}}" bindbuttontap="confirmBack" buttons="{{[{text: '取消'}, {text: '确认'}]}}">
