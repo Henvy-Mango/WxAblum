@@ -16,7 +16,10 @@ Page({
     deeper: false,
 
     // 加载框
-    loading: false,
+    loading: {
+      enable: false,
+      text: "加载中"
+    },
 
     // Toast信息
     message: {
@@ -127,7 +130,10 @@ Page({
   getAlbumList(callback, marker = "") {
     let that = this;
     that.setData({
-      loading: true,
+      loading: {
+        enable: true,
+        text: "加载中"
+      },
     })
     var prefix = that.data.folder[that.data.selectFolder];
     if (prefix == '/')
@@ -152,12 +158,18 @@ Page({
         var list = (data && data.Contents || [])
           .map(item => 'https://' + config.Bucket + '.cos.' + config.Region + '.myqcloud.com/' + util.camSafeUrlEncode(item.Key).replace(/%2F/g, '/')).filter(item => /\.(jpg|png|gif|jpeg|pjp|pjpeg|jfif|xbm|tif|svgz|webp|ico|bmp|svg)$/.test(item) && /^(?!.*CDN).*$/.test(item));
         that.setData({
-          loading: false,
+          loading: {
+            enable: false,
+            text: "加载中"
+          },
         })
         callback(list);
       } else {
         that.setData({
-          loading: false,
+          loading: {
+            enable: false,
+            text: "加载中"
+          },
         })
         callback([]);
       }
@@ -187,72 +199,70 @@ Page({
     wx.chooseImage({
       count: 9,
       sizeType: ['original', 'compressed'],
-      sourceType: ['album', 'camera'],
-      success: (res) => {
-        that.setData({
-          loading: true,
-          upload: res.tempFilePaths.map(item => {
-            return {
-              path: item,
-              canvasWidth: 0,
-              canvasHeight: 0,
+      sourceType: ['album', 'camera']
+    }).then(res => {
+      that.setData({
+        loading: {
+          enable: true,
+          text: "上传中"
+        },
+        upload: res.tempFilePaths.map(item => {
+          return {
+            path: item,
+            canvasWidth: 0,
+            canvasHeight: 0,
+          }
+        }),
+        message: {
+          enable: true,
+          type: "info",
+          text: "正在上传图片…",
+          delay: 1000,
+        },
+      })
+      return res.tempFilePaths
+    }).then(res => {
+      res.forEach((filePath, index) => {
+        that.getCanvasDetail(filePath, index)
+          .then(res => that.getCanvasImg(res))
+          .then(res => util.checkSafePic(res))
+          .then(res => {
+            if (res) {
+              var Key = util.getRandFileName(filePath);
+              filePath && cos.postObject({
+                Bucket: config.Bucket,
+                Region: config.Region,
+                Key: Key,
+                FilePath: filePath
+              }, function (err, data) {
+                if (data) {
+                  let albumList = that.data.albumList;
+                  // debugger;
+                  albumList.unshift('https://' + data.Location);
+                  that.setData({
+                    albumList,
+                  });
+                  that.renderAlbumList();
+                }
+              })
+            } else {
+              that.setData({
+                message: {
+                  enable: true,
+                  type: "error",
+                  text: "第" + (index + 1).toString() + "张图片不合法",
+                  delay: 3000,
+                },
+              })
             }
-          }),
-          message: {
-            enable: true,
-            type: "info",
-            text: "正在上传图片…",
-            delay: 1000,
-          },
-        })
-
-        res.tempFilePaths.forEach(function (filePath, index) {
-          that.getCanvasDetail(filePath, index)
-            .then(res => that.getCanvasImg(res)
-              .then(res => {
-                console.log(res)
-                util.checkSafePic(res).then(res => {
-                  if (res) {
-                    var Key = util.getRandFileName(filePath);
-                    filePath && cos.postObject({
-                      Bucket: config.Bucket,
-                      Region: config.Region,
-                      Key: Key,
-                      FilePath: filePath
-                    }, function (err, data) {
-                      if (data) {
-                        let albumList = that.data.albumList;
-                        // debugger;
-                        albumList.unshift('https://' + data.Location);
-                        that.setData({
-                          albumList,
-                        });
-                        that.renderAlbumList();
-                      }
-                    });
-                  } else {
-                    that.setData({
-                      message: {
-                        enable: true,
-                        type: "error",
-                        text: "第" + (index + 1).toString() + "张图片不合法",
-                        delay: 3000,
-                      },
-                    })
-                  }
-                })
-              }))
-        })
-
-        that.setData({
-          loading: false
-        })
-
-      }, fail: (err) => {
-        console.log(err)
+          })
+      })
+    }).then(() => that.setData({
+      loading: {
+        enable: false,
+        text: "加载中"
       }
-    })
-
+    }))
   },
 
   // 计算图片缩小后的尺寸
@@ -295,29 +305,42 @@ Page({
   },
 
   // 使用canvas画布，获取压缩后的图片
-  getCanvasImg(res) {
+  async getCanvasImg(res) {
     var that = this;
-    return new Promise((resolve, reject) => {
-      //----------绘制图形并取出图片路径--------------
-      var ctx = wx.createCanvasContext('canvas-' + res.index)
-      ctx.drawImage(res.path, 0, 0, res.canvasWidth, res.canvasHeight)
-      ctx.draw(setTimeout(function () {
-        wx.canvasToTempFilePath({
-          canvasId: 'canvas-' + res.index,
-          destWidth: res.anvasWidth,
-          destHeight: res.canvasHeight,
-          quality: 0.8,
-          success: function (res) {
-            //最终图片路径
-            console.log(res)
-            resolve(res.tempFilePath)
-          },
-          fail: function (res) {
-            console.log(res.errMsg)
+    //----------绘制图形并取出图片路径--------------
+    const query = wx.createSelectorQuery();
+    const canvas = await new Promise((resolve, reject) => {
+      query.select('#canvas-' + res.index)
+        .fields({ node: true, size: true })
+        .exec(async (item) => {
+          const width = item[0].width
+          const height = item[0].height
+
+          const canvas = item[0].node
+          const ctx = canvas.getContext('2d')
+
+          const dpr = wx.getSystemInfoSync().pixelRatio
+          canvas.width = width * dpr
+          canvas.height = height * dpr
+          ctx.scale(dpr, dpr)
+
+          const image = canvas.createImage();//创建image       
+          image.src = res.path;//指定路径为getImageInfo的文件
+          image.onload = () => {
+            ctx.drawImage(image, 0, 0, width, height)//图片加载完成时draw
+            resolve(canvas)
           }
-        }, that)
-      }, 500))  //留一定的时间绘制canvas
+        })
     })
+
+    return wx.canvasToTempFilePath({
+      canvas: canvas,
+      quality: 0.8,
+    }, that).then(res => {
+      console.log(res.tempFilePath)
+      return res.tempFilePath
+    })
+
   },
 
   // 进入预览模式
@@ -626,11 +649,4 @@ Page({
     }, that.data.marker);
   },
 
-  messageGone() {
-    var that = this
-    this.data.message.enable = false
-    this.setData({
-      message: that.data.message
-    })
-  }
 });

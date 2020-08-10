@@ -2,8 +2,8 @@
   "cloud": true,
   "pages": [
     "pages/index/index",
-    "pages/album/album",
-    "pages/preview/preview"
+    "pages/preview/preview",
+    "pages/album/album"
   ],
   "window": {
     "navigationBarBackgroundColor": "#9dbdc6",
