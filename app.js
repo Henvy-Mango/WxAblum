@@ -1,5 +1,10 @@
+import { promisifyAll } from './lib/api-promise/promise';
+
 var COS = require('./lib/cos.js');
 const app = getApp();
+
+const wxp = {}
+promisifyAll(wx, wxp)
 
 App({
 
