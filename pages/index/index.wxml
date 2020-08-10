@@ -1,4 +1,9 @@
-<canvas canvas-id='canvas' style="width:{{cWidth}}px;height:{{cHeight}}px;position:absolute;top:-999999px;left:-999999px;"></canvas>
+<!-- 压缩图片用的画布 -->
+<canvas type="2d" id="canvas" style="width:{{canvasWidth}}px;height:{{canvasHeight}}px;position:absolute;top:-999999px;left:-999999px;"></canvas>
+
+<!-- Toast消息框 -->
+<mp-toptips msg="{{message.text}}" type="{{message.type}}" show="{{message.enable}}" delay="{{message.delay}}"></mp-toptips>
+
 <view class="top"></view>
 <view class="bottom"></view>
 <view class="main">
