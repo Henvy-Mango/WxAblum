@@ -1,10 +1,7 @@
 Page({
   data: {
     type: 'image',
-    url: '',
-    formatUrl: '',
-    view: '',
-    showPreview: false,
+    url: ''
   },
   onShareAppMessage: function (res) {
     var typeMap = {
@@ -20,43 +17,21 @@ Page({
     }
     return data;
   },
-  onShow() {
-    this.setData({
-      showPreview: false
-    });
-    var tmp = decodeURIComponent(this.options.url);
-    tmp = "https://img.naomi.pub/" + tmp.substring(tmp.lastIndexOf('/') + 1, tmp.length)
+
+  onLoad() {
     this.setData({
       type: this.options.type || 'image',
       url: decodeURIComponent(this.options.url) || '',
-      view: decodeURIComponent(this.options.url) + '!preview',
-      formatUrl: tmp,
     });
   },
-  showPreviewBox() {
-    this.setData({
-      showPreview: true
-    });
-  },
+
   copyLink() {
-    wx.setClipboardData({
-      data: this.data.formatUrl || '',
-      success: function () {
-        wx.showToast({
-          title: '复制成功',
-          icon: 'success',
-          duration: 2000
-        });
-      },
-      fail: function () {
-        wx.showToast({
-          title: '复制失败',
-          icon: 'error',
-          duration: 2000
-        });
-      },
-    });
+    var tmp = decodeURIComponent(this.data.url);
+    tmp = "https://img.naomi.pub/" + tmp.substring(tmp.lastIndexOf('/') + 1, tmp.length)
+
+    wx.setClipboardData({ data: tmp });
   },
+
   saveImage() {
     wx.downloadFile({
       url: this.data.url,
