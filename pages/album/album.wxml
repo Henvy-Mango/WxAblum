@@ -62,7 +62,7 @@
 				</block>
 
 				<block wx:elif="{{item.type==='done'}}">
-					<view class="upload-add">
+					<view class="upload-add" bindlongpress="rightToDelete">
 						<image src="/images/done.png" mode="aspectFit"></image>
 						<text style="font-size:36rpx;">没有更多图片</text>
 					</view>
@@ -94,7 +94,7 @@
 <mp-toptips msg="{{message.text}}" type="{{message.type}}" show="{{message.enable}}" delay="{{message.delay}}"></mp-toptips>
 
 <!-- 返回对话框 -->
-<mp-dialog title="返回首页" show="{{back}}" bindbuttontap="confirmBack" buttons="{{[{text: '取消'}, {text: '确认'}]}}">
+<mp-dialog title="{{dialog.title}}" show="{{dialog.enable}}" bindbuttontap="confirm" buttons="{{[{text: '取消'}, {text: '确认'}]}}">
 	<image src="/images/done.png" style="width:50px;height:50px;" />
-	<view>真的要回去吗？</view>
+	<view>{{dialog.message}}</view>
 </mp-dialog>
