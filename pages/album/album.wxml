@@ -25,26 +25,26 @@
 
 <!-- 图片列表容器 -->
 <scroll-view class="container" scroll-y="true" style="display: {{!preview ? 'block' : 'none'}};">
-	<checkbox-group class="upload-tips" style="position:absolute;right:15rpx;" bindchange="checkboxChange">
-		<checkbox value="deepFold">深度遍历</checkbox>
-	</checkbox-group>
-	<picker bindchange="bindPickerChange" value="{{selectFolder}}" range="{{folder}}">
-		<view class="upload-tips" style="margin-left:32rpx;">
-			当前文件夹： {{folder[selectFolder]}}
-		</view>
-	</picker>
+	<view class="top-button">
+		<checkbox-group class="upload-tips" style="position:absolute;right:15rpx;" bindchange="checkboxChange">
+			<checkbox value="deepFold">深度遍历</checkbox>
+		</checkbox-group>
+		<picker bindchange="bindPickerChange" value="{{selectFolder}}" range="{{folder}}">
+			<view class="upload-tips" style="margin-left:32rpx;">
+				当前文件夹： {{folder[selectFolder]}}
+			</view>
+		</picker>
+	</view>
 
 	<view class="album-container">
 		<view class="item-group" wx:for="{{layoutList}}" wx:for-item="group" wx:for-index="rowIndex" wx:key="group">
 			<block wx:for="{{group}}" wx:for-item="item" wx:for-index="cellIndex" wx:key="item">
 
 				<block wx:if="{{item.type==='add'}}">
-					<view class="upload-add-outer">
-						<view class="upload-add" bindtap="chooseImage">
-							<a class="tips">点击或长按图片</a>
-							<image src="/images/camera.png" mode="aspectFit"></image>
-							<text>上传图片</text>
-						</view>
+					<view class="upload-add" bindtap="chooseImage">
+						<a class="tips">点击或长按图片</a>
+						<image src="/images/camera.png" mode="aspectFit"></image>
+						<text>上传图片</text>
 					</view>
 				</block>
 
@@ -62,11 +62,9 @@
 				</block>
 
 				<block wx:elif="{{item.type==='done'}}">
-					<view class="upload-add-outer">
-						<view class="upload-add">
-							<image src="/images/done.png" mode="aspectFit"></image>
-							<text style="font-size:36rpx;">没有更多图片</text>
-						</view>
+					<view class="upload-add">
+						<image src="/images/done.png" mode="aspectFit"></image>
+						<text style="font-size:36rpx;">没有更多图片</text>
 					</view>
 				</block>
 
