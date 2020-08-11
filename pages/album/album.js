@@ -692,7 +692,13 @@ Page({
         { text: '复制图片链接', value: 2 },
         { text: '保存到本地', value: 3 },
         { text: '宁就是管理员？', type: 'warn', value: 4 }
-      ]
+      ],
+      message: {
+        enable: true,
+        type: "error",
+        text: "?",
+        delay: 1500,
+      }
     })
   }
 
