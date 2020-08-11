@@ -146,7 +146,7 @@ Page({
       Prefix: prefix,
       Marker: marker,
       Delimiter: delimiter,
-      MaxKeys: 200,
+      MaxKeys: 100,
     }, function (err, data) {
       if (data) {
         console.log(data)
@@ -155,8 +155,10 @@ Page({
         } else {
           that.data.marker = 0
         }
-        var list = (data && data.Contents || [])
-          .map(item => 'https://' + config.Bucket + '.cos.' + config.Region + '.myqcloud.com/' + util.camSafeUrlEncode(item.Key).replace(/%2F/g, '/')).filter(item => /\.(jpg|png|gif|jpeg|pjp|pjpeg|jfif|xbm|tif|svgz|webp|ico|bmp|svg)$/.test(item) && /^(?!.*CDN).*$/.test(item));
+        var list =
+          util.qSort((data && data.Contents || []).filter(item => /\.(jpg|png|gif|jpeg|pjp|pjpeg|jfif|xbm|tif|svgz|webp|ico|bmp|svg)$/.test(item.Key) && /^(?!.*CDN).*$/.test(item.Key)))
+            .map(item => 'https://' + config.Bucket + '.cos.' + config.Region + '.myqcloud.com/' + util.camSafeUrlEncode(item.Key).replace(/%2F/g, '/'));
+
         that.setData({
           loading: {
             enable: false,
