@@ -29,6 +29,14 @@ Page({
       delay: 2000,
     },
 
+    // Dialog信息
+    dialog: {
+      enable: false,
+      type: "back",
+      title: "返回首页",
+      message: "真的要回去吗？"
+    },
+
     // 下一页标记
     marker: 0,
 
@@ -404,6 +412,16 @@ Page({
       this.copyLink()
     } else if (tmp == 3) {
       this.downloadImage()
+    } else if (tmp == 4) {
+      this.setData({
+        dialog: {
+          enable: true,
+          type: "delete",
+          title: "删除图片",
+          message: "真的要删除吗？"
+        },
+        showActionSheet: false
+      })
     }
   },
 
@@ -564,21 +582,37 @@ Page({
   // 自定义导航栏返回按钮
   tapBackButton() {
     this.setData({
-      back: true
+      dialog: {
+        enable: true,
+        type: "back",
+        title: "返回首页",
+        message: "真的要回去吗？"
+      }
     })
   },
 
   // 返回对话框
-  confirmBack(e) {
-    if (e.detail.item.text == "取消")
+  confirm(e) {
+    if (e.detail.item.text == "取消") {
+      this.data.dialog.enable = !this.data.dialog.enable
       this.setData({
-        back: false
+        dialog: this.data.dialog.enable
       })
+    }
     else if (e.detail.item.text == "确认") {
-      wx.disableAlertBeforeUnload()
-      wx.navigateBack({
-        delta: 1,
-      })
+      if (this.data.dialog.type == "back") {
+        wx.disableAlertBeforeUnload()
+        wx.navigateBack({
+          delta: 1,
+        })
+      } else if (this.data.dialog.type == "delete") {
+        this.data.dialog.enable = !this.data.dialog.enable
+        this.setData({
+          dialog: this.data.dialog.enable
+        })
+        this.deleteImage()
+        this.data.imageInAction = ''
+      }
     }
   },
 
@@ -650,5 +684,16 @@ Page({
       that.renderAlbumList();
     }, that.data.marker);
   },
+
+  rightToDelete() {
+    this.setData({
+      Actions: [
+        { text: '返回顶部', value: 1 },
+        { text: '复制图片链接', value: 2 },
+        { text: '保存到本地', value: 3 },
+        { text: '宁就是管理员？', type: 'warn', value: 4 }
+      ]
+    })
+  }
 
 });
