@@ -1,3 +1,7 @@
+page {
+    background-color: #5a6b72;
+}
+
 .container {
     width: 100%;
     height: 100%;
@@ -16,7 +20,7 @@
 .album-item {
     flex: 1;
     text-align: center;
-    margin: 3rpx;
+    margin: 0 3rpx 3rpx 3rpx;
     width: 242rpx;
     height: 242rpx;
     line-height: 242rpx;
@@ -24,6 +28,10 @@
 
 .album-item.empty {
     background: transparent;
+}
+
+.top-button {
+    background: #eff3f5;
 }
 
 .upload-tips {
@@ -42,35 +50,25 @@
     position: absolute;
     left: 6rpx;
     top: 86rpx;
-    width: 240rpx;
+    width: 242rpx;
     height: 239rpx;
     text-align: center;
     line-height: 240rpx;
     overflow: hidden;
 }
 
-.upload-add-outer {
-    display: inline-block;
-    flex: 1;
-    text-align: center;
-    margin: 3rpx;
-    width: 242rpx;
-    height: 242rpx;
-    line-height: 242rpx;
-}
-
 .upload-add {
     display: block;
     position: relative;
     text-align: center;
-    margin: 3rpx;
-    width: 242rpx;
-    height: 240rpx;
-    border: 1rpx solid #ccc;
-    line-height: 240rpx;
+    margin: 0 3rpx 3rpx 3rpx;
+    width: 244rpx;
+    height: 242rpx;
+    line-height: 242rpx;
     color: #ccc;
     overflow: hidden;
     box-sizing: border-box;
+    background: #fff;
 }
 
 .upload-add image {
@@ -197,6 +195,7 @@ action-sheet-item.warn {
     display: flex;
     justify-content: center;
     align-items: center;
+    border-bottom: #272f32 solid 1px;
 }
 
 .loading image {
