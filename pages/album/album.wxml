@@ -1,34 +1,27 @@
 <!-- 压缩图片用的画布 -->
-<canvas wx:for='{{upload}}' wx:for-index="index" type="2d" id='canvas-{{index}}' wx:key="index" style="width:{{item.canvasWidth}}px;height:{{item.canvasHeight}}px;position:absolute;top:-999999px;left:-999999px;"></canvas>
+<canvas wx:for='{{upload}}' wx:for-index="index" type="2d" id='canvas-{{index}}' wx:key="index"
+	style="width:{{item.canvasWidth}}px;height:{{item.canvasHeight}}px;position:absolute;top:-999999px;left:-999999px;"></canvas>
 
-<!-- 自定义导航栏 -->
-<view wx:if="{{!previewMode}}" class="navigation-container" style="{{'height: ' + navigationBarAndStatusBarHeight}}">
-	<!--空白来占位状态栏-->
-	<view style="{{'height: ' + statusBarHeight}}"></view>
-	<!--自定义导航栏-->
-	<view class="navigation-bar" style="{{'height:' + navigationBarHeight}}">
-		<view bindtap="tapBackButton" class="navigation-buttons" style="{{'height:' + menuButtonHeight}}">
-			<image class="nav-img" src='/images/back.png' />
-		</view>
-		<view class="navigation-title" style="{{'line-height:' + navigationBarHeight}}">云相册</view>
-	</view>
-</view>
+<van-nav-bar title="云相册" left-text="返回" left-arrow bind:click-left="onClickLeft" placeholder="true" />
 
-<!--空白占位，占用空出的位置-->
-<view style="{{'height: ' + navigationBarAndStatusBarHeight}}; background: #ffffff"></view>
+<!-- 选项菜单 -->
+<van-action-sheet show="{{ showActionSheet }}" actions="{{ Actions }}" bind:close="hideActionSheet"
+	bind:select="selectActionSheet" cancel-text="返回" bind:cancel="hideActionSheet" />
+
+<!-- Toast消息框 -->
+<van-notify id="van-notify" />
 
 <!-- 加载框 -->
 <view wx:if="{{loading.enable}}" class="loading">
-	<image src="/images/loading.gif" mode="aspectFit" />
-	<text decode="true">&nbsp;{{loading.text}}……</text>
+	<van-loading size="24px">{{loading.text}}...</van-loading>
 </view>
 
 <!-- 图片列表容器 -->
 <scroll-view class="container" scroll-y="true" style="display: {{!preview ? 'block' : 'none'}};">
 	<view class="top-button">
-		<checkbox-group class="upload-tips" style="position:absolute;right:15rpx;" bindchange="checkboxChange">
-			<checkbox value="deepFold">深度遍历</checkbox>
-		</checkbox-group>
+		<van-radio-group class="upload-tips" bind:change="checkboxChange" style="position:absolute;right:15rpx;top:18rpx;">
+			<van-radio shape="square" value="deepFold">深度遍历</van-radio>
+		</van-radio-group>
 		<picker bindchange="bindPickerChange" value="{{selectFolder}}" range="{{folder}}">
 			<view class="upload-tips" style="margin-left:32rpx;">
 				当前文件夹： {{folder[selectFolder]}}
@@ -49,7 +42,8 @@
 				</block>
 
 				<block wx:elif="{{item.type==undefined&&item!=0}}">
-					<image lazy-load="true" bindtap="enterPreviewMode" bindlongpress="showActions" data-src="{{item}}" class="album-item" src="{{item+'!preview'}}" mode="aspectFill"></image>
+					<image lazy-load="true" bindtap="enterPreviewMode" bindlongpress="showActions" data-src="{{item}}"
+						class="album-item" src="{{item+'!preview'}}" mode="aspectFill"></image>
 				</block>
 
 				<block wx:elif="{{item.type==='next'}}">
@@ -78,23 +72,13 @@
 </scroll-view>
 
 <!-- 预览模式 -->
-<swiper class="swiper-container" duration="{{slideDuration}}" current="{{previewIndex}}" bindtap="leavePreviewMode" style="display: {{previewMode ? 'block' : 'none'}};">
+<swiper class="swiper-container" duration="{{slideDuration}}" current="{{previewIndex}}" bindtap="leavePreviewMode"
+	style="display: {{previewMode ? 'block' : 'none'}};">
 	<block wx:for="{{albumList}}" wx:for-item="item" wx:key="item">
 		<swiper-item>
-			<image wx:if="{{previewMode}}" data-src="{{item}}" bindlongpress="showActions" lazy-load="true" src="{{item + '!weixin'}}" mode="aspectFit"></image>
+			<image wx:if="{{previewMode}}" data-src="{{item}}" bindlongpress="showActions" lazy-load="true"
+				src="{{item + '!weixin'}}" mode="aspectFit"></image>
 		</swiper-item>
 	</block>
 </swiper>
-
-<!-- 选项菜单 -->
-<mp-actionSheet bindactiontap="btnClick" show="{{showActionSheet}}" actions="{{Actions}}" bindclose="hideActionSheet" cancel-text="返回">
-</mp-actionSheet>
-
-<!-- Toast消息框 -->
-<mp-toptips msg="{{message.text}}" type="{{message.type}}" show="{{message.enable}}" delay="{{message.delay}}"></mp-toptips>
-
-<!-- 返回对话框 -->
-<mp-dialog title="{{dialog.title}}" show="{{dialog.enable}}" bindbuttontap="confirm" buttons="{{[{text: '取消'}, {text: '确认'}]}}">
-	<image src="/images/done.png" style="width:50px;height:50px;" />
-	<view>{{dialog.message}}</view>
-</mp-dialog>
+\

@@ -1,10 +1,7 @@
-import { promisifyAll } from './lib/promise/promise';
-
-var COS = require('./lib/cos.js');
+const config = require('./config');
+const util = require('./lib/util');
+var api = require('./lib/api');
 const app = getApp();
-
-const wxp = {}
-promisifyAll(wx, wxp)
 
 App({
 
@@ -15,7 +12,7 @@ App({
    * 当小程序初始化完成时，会触发 onLaunch（全局只触发一次）
    */
   onLaunch: function () {
-    this.globalData.cos = COS.get();
+    this.globalData.cos = api.getSign();
     wx.cloud.init()
 
     console.log(wx.getSystemInfoSync())

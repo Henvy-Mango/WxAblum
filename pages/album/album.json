@@ -1,8 +1,14 @@
 {
   "navigationStyle": "custom",
   "usingComponents": {
-    "mp-dialog": "/miniprogram_npm/weui-miniprogram/dialog/dialog",
-    "mp-actionSheet": "/miniprogram_npm/weui-miniprogram/actionsheet/actionsheet",
-    "mp-toptips": "/miniprogram_npm/weui-miniprogram/toptips/toptips"
+    "van-action-sheet": "@vant/weapp/action-sheet/index",
+    "van-radio-group": "@vant/weapp/radio-group/index",
+    "van-uploader": "@vant/weapp/uploader/index",
+    "van-loading": "@vant/weapp/loading/index",
+    "van-nav-bar": "@vant/weapp/nav-bar/index",
+    "van-picker": "@vant/weapp/picker/index",
+    "van-notify": "@vant/weapp/notify/index",
+    "van-radio": "@vant/weapp/radio/index",
+    "van-image": "@vant/weapp/image/index"
   }
 }
