@@ -2,10 +2,10 @@
 <canvas wx:for='{{upload}}' wx:for-index="index" type="2d" id='canvas-{{index}}' wx:key="index"
 	style="width:{{item.canvasWidth}}px;height:{{item.canvasHeight}}px;position:absolute;top:-999999px;left:-999999px;"></canvas>
 
-<van-nav-bar title="云相册" left-text="返回" left-arrow bind:click-left="onClickLeft" placeholder="true" />
+<van-nav-bar title="云相册" left-text="返回" left-arrow bind:click-left="goBackPage" placeholder="true" />
 
 <!-- 选项菜单 -->
-<van-action-sheet show="{{ showActionSheet }}" actions="{{ Actions }}" bind:close="hideActionSheet"
+<van-action-sheet show="{{showActionSheet}}" actions="{{Actions}}" bind:close="hideActionSheet"
 	bind:select="selectActionSheet" cancel-text="返回" bind:cancel="hideActionSheet" />
 
 <!-- Toast消息框 -->
@@ -13,18 +13,18 @@
 
 <!-- 加载框 -->
 <view wx:if="{{loading.enable}}" class="loading">
-	<van-loading size="24px">{{loading.text}}...</van-loading>
+	<van-loading size="24px">{{loading.text}}...{{loading.progress!=null ? loading.progress : ''}}{{loading.progress!=null
+		? '%' : ''}}</van-loading>
 </view>
 
 <!-- 图片列表容器 -->
-<scroll-view class="container" scroll-y="true" style="display: {{!preview ? 'block' : 'none'}};">
+<scroll-view class="container" scroll-y="true" style="display: {{!preview.previewMode ? 'block' : 'none'}};">
 	<view class="top-button">
-		<van-radio-group class="upload-tips" bind:change="checkboxChange" style="position:absolute;right:15rpx;top:18rpx;">
-			<van-radio shape="square" value="deepFold">深度遍历</van-radio>
-		</van-radio-group>
-		<picker bindchange="bindPickerChange" value="{{selectFolder}}" range="{{folder}}">
+		<van-checkbox class="upload-tips" style="position:absolute;right:15rpx;top:18rpx;" shape="square" icon-size="45rpx"
+			bind:change="checkboxChange" value="{{toolBar.deeper}}">深度遍历</van-checkbox>
+		<picker bindchange="bindPickerChange" value="{{toolBar.selectFolder}}" range="{{toolBar.folder}}">
 			<view class="upload-tips" style="margin-left:32rpx;">
-				当前文件夹： {{folder[selectFolder]}}
+				当前文件夹： {{toolBar.folder[toolBar.selectFolder]}}
 			</view>
 		</picker>
 	</view>
@@ -33,7 +33,7 @@
 		<view class="item-group" wx:for="{{layoutList}}" wx:for-item="group" wx:for-index="rowIndex" wx:key="group">
 			<block wx:for="{{group}}" wx:for-item="item" wx:for-index="cellIndex" wx:key="item">
 
-				<block wx:if="{{item.type==='add'}}">
+				<block wx:if="{{item.type === 'add'}}">
 					<view class="upload-add" bindtap="chooseImage">
 						<a class="tips">点击或长按图片</a>
 						<image src="/images/camera.png" mode="aspectFit"></image>
@@ -41,12 +41,12 @@
 					</view>
 				</block>
 
-				<block wx:elif="{{item.type==undefined&&item!=0}}">
+				<block wx:elif="{{item.type == undefined && item!=0}}">
 					<image lazy-load="true" bindtap="enterPreviewMode" bindlongpress="showActions" data-src="{{item}}"
 						class="album-item" src="{{item+'!preview'}}" mode="aspectFill"></image>
 				</block>
 
-				<block wx:elif="{{item.type==='next'}}">
+				<block wx:elif="{{item.type === 'next'}}">
 					<view class="upload-add-outer">
 						<view class="upload-add" bindtap="nextPage">
 							<image src="/images/next.gif" mode="aspectFit"></image>
@@ -72,13 +72,12 @@
 </scroll-view>
 
 <!-- 预览模式 -->
-<swiper class="swiper-container" duration="{{slideDuration}}" current="{{previewIndex}}" bindtap="leavePreviewMode"
-	style="display: {{previewMode ? 'block' : 'none'}};">
+<swiper class="swiper-container" duration="{{preview.slideDuration}}" current="{{preview.previewIndex}}"
+	bindtap="leavePreviewMode" style="display: {{preview.previewMode ? 'block' : 'none'}};">
 	<block wx:for="{{albumList}}" wx:for-item="item" wx:key="item">
 		<swiper-item>
-			<image wx:if="{{previewMode}}" data-src="{{item}}" bindlongpress="showActions" lazy-load="true"
+			<image wx:if="{{preview.previewMode}}" data-src="{{item}}" bindlongpress="showActions" lazy-load="true"
 				src="{{item + '!weixin'}}" mode="aspectFit"></image>
 		</swiper-item>
 	</block>
 </swiper>
-\

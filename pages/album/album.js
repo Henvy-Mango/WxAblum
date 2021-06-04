@@ -10,17 +10,20 @@ Page({
     // 图片原始列表
     albumList: [],
 
-    // 文件夹选择器
-    folder: ['/'],
-    selectFolder: 0,
+    toolBar: {
+      // 文件夹选择器
+      folder: ['/'],
+      selectFolder: 0,
 
-    // 深度遍历
-    deeper: false,
+      // 深度遍历
+      deeper: false,
+    },
 
     // 加载框
     loading: {
       enable: false,
-      text: "加载中"
+      text: "加载中",
+      progress: null
     },
 
     // 下一页标记
@@ -56,35 +59,41 @@ Page({
     // 当前操作的图片
     imageInAction: '',
 
-    // 图片预览模式
-    previewMode: false,
+    preview: {
+      // 图片预览模式
+      previewMode: false,
 
-    // 当前预览索引
-    previewIndex: 0,
+      // 当前预览索引
+      previewIndex: 0,
 
-    // 切换动画的时间
-    slideDuration: 400,
-
-    // 状态栏高度
-    statusBarHeight: wx.getStorageSync('statusBarHeight') + 'px',
-    // 导航栏高度
-    navigationBarHeight: wx.getStorageSync('navigationBarHeight') + 'px',
-    // 胶囊按钮高度
-    menuButtonHeight: wx.getStorageSync('menuButtonHeight') + 'px',
-    // 导航栏和状态栏高度
-    navigationBarAndStatusBarHeight: wx.getStorageSync('statusBarHeight') +
-      wx.getStorageSync('navigationBarHeight') + 3 + 'px',
-
+      // 切换动画的时间
+      slideDuration: 400,
+    }
   },
 
   onLoad() {
-    var that = this;
+    wx.enableAlertBeforeUnload()
+    this.render();
+  },
+
+  goBackPage(e) {
+    wx.navigateBack({
+      delta: 1,
+    })
+  },
+
+  render(marker = "") {
+    this.setData({
+      layoutList: [],
+      albumList: []
+    })
 
     this.getAlbumDir();
     // 初始化布局
     this.renderAlbumList();
 
-    this.getAlbumList(function (list) {
+    let that = this;
+    this.getAlbumList((list) => {
       list = that.data.albumList.concat(list || {});
       if (!list.length) {
         list = [];
@@ -94,8 +103,7 @@ Page({
         'albumList': list
       });
       that.renderAlbumList();
-    });
-
+    }, marker);
   },
 
   // 获取文件夹
@@ -106,12 +114,12 @@ Page({
       Region: config.Region,
       Prefix: "",
       Delimiter: "/",
-    }, function (err, data) {
+    }, (err, data) => {
       if (data) {
         let list = data.CommonPrefixes.map(item => item.Prefix).filter(item => /^(?!.*CDN).*$/.test(item))
-        that.data.folder = that.data.folder.concat(list)
+        that.data.toolBar.folder = ['/'].concat(list)
         that.setData({
-          folder: that.data.folder
+          toolBar: that.data.toolBar
         })
       }
     })
@@ -120,17 +128,14 @@ Page({
   // 获取相册列表
   getAlbumList(callback, marker = "") {
     let that = this;
-    that.setData({
-      loading: {
-        enable: true,
-        text: "加载中"
-      },
+    this.setData({
+      loading: this.loadingMessage(true, "加载中")
     })
-    var prefix = that.data.folder[that.data.selectFolder];
+    var prefix = this.data.toolBar.folder[this.data.toolBar.selectFolder];
     if (prefix == '/')
       prefix = config.Prefix
-    var delimiter = that.data.deeper;
-    delimiter = delimiter ? config.Delimiter : '/';
+    var delimiter = this.data.toolBar.deeper ? config.Delimiter : '/';
+
     cos.getBucket({
       Bucket: config.Bucket,
       Region: config.Region,
@@ -138,7 +143,7 @@ Page({
       Marker: marker,
       Delimiter: delimiter,
       MaxKeys: 100,
-    }, function (err, data) {
+    }, (err, data) => {
       if (data) {
         console.log(data)
         if (data.IsTruncated == "true") {
@@ -149,23 +154,13 @@ Page({
         var list =
           util.qSort((data && data.Contents || []).filter(item => /\.(jpg|png|gif|jpeg|pjp|pjpeg|jfif|xbm|tif|svgz|webp|ico|bmp|svg)$/.test(item.Key) && /^(?!.*CDN).*$/.test(item.Key)))
           .map(item => 'https://' + config.Bucket + '.cos.' + config.Region + '.myqcloud.com/' + util.camSafeUrlEncode(item.Key).replace(/%2F/g, '/'));
-
-        that.setData({
-          loading: {
-            enable: false,
-            text: "加载中"
-          },
-        })
         callback(list);
       } else {
-        that.setData({
-          loading: {
-            enable: false,
-            text: "加载中"
-          },
-        })
         callback([]);
       }
+      that.setData({
+        loading: this.loadingMessage(false, "加载中")
+      })
     });
   },
 
@@ -194,25 +189,18 @@ Page({
       sizeType: ['original', 'compressed'],
       sourceType: ['album', 'camera']
     }).then(res => {
+      that.notifyMessage('primary', '正在上传图片', 2000)
       that.setData({
-        loading: {
-          enable: true,
-          text: "上传中"
-        },
+        loading: this.loadingMessage(true, "上传中"),
         upload: res.tempFilePaths.map(item => {
           return {
             path: item,
             canvasWidth: 0,
             canvasHeight: 0,
           }
-        }),
-        message: {
-          enable: true,
-          type: "info",
-          text: "正在上传图片…",
-          delay: 1000,
-        },
+        })
       })
+
       return res.tempFilePaths
     }).then(res => {
       res.forEach((filePath, index) => {
@@ -227,7 +215,7 @@ Page({
                 Region: config.Region,
                 Key: Key,
                 FilePath: filePath
-              }, function (err, data) {
+              }, (err, data) => {
                 if (data) {
                   let albumList = that.data.albumList;
                   // debugger;
@@ -251,21 +239,18 @@ Page({
           })
       })
     }).then(() => that.setData({
-      loading: {
-        enable: false,
-        text: "加载中"
-      }
+      loading: this.loadingMessage(false, "上传中"),
     }))
   },
 
   // 计算图片缩小后的尺寸
-  getCanvasDetail: function (tempFilePaths, index) {
+  getCanvasDetail(tempFilePaths, index) {
     var that = this;
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       //-----返回选定照片的本地文件路径列表，获取照片信息-----------
       wx.getImageInfo({
         src: tempFilePaths,
-        success: function (res) {
+        success: (res) => {
           //---------利用canvas压缩图片--------------
           var ratio = 2;
           var canvasWidth = res.width //图片原始长宽
@@ -289,7 +274,7 @@ Page({
             path: tempFilePaths
           })
         },
-        fail: function (res) {
+        fail: (res) => {
           console.log(res.errMsg)
           reject(res)
         }
@@ -340,32 +325,24 @@ Page({
 
   // 进入预览模式
   enterPreviewMode(event) {
-    var that = this;
     if (this.data.showActionSheet) {
       return;
     }
     let imageUrl = event.target.dataset.src;
     let previewIndex = this.data.albumList.indexOf(imageUrl);
-
+    this.data.Actions.shift()
     this.setData({
       slideDuration: 0,
-      Actions: [{
-          text: '复制图片链接',
-          value: 2
-        },
-        {
-          text: '保存到本地',
-          value: 3
-        }
-      ]
+      Actions: this.data.Actions
     });
-    setTimeout(function () {
-      that.setData({
-        previewMode: true,
-        previewIndex: previewIndex
+    this.data.preview.previewMode = true
+    this.data.preview.previewIndex = previewIndex
+    setTimeout(() => {
+      this.setData({
+        preview: this.data.preview
       });
-      setTimeout(function () {
-        that.setData({
+      setTimeout(() => {
+        this.setData({
           slideDuration: 400
         });
       }, 400);
@@ -374,9 +351,17 @@ Page({
 
   // 退出预览模式
   leavePreviewMode() {
+    this.data.preview.previewMode = false
+    this.data.preview.previewIndex = 0
+
+    this.data.Actions.unshift({
+      name: '返回顶部',
+      value: 1
+    })
+
     this.setData({
-      previewMode: false,
-      previewIndex: 0
+      preview: this.data.preview,
+      Actions: this.data.Actions
     })
   },
 
@@ -397,11 +382,21 @@ Page({
       this.copyLink()
     } else if (tmp == 3) {
       this.downloadImage()
+    } else if (tmp == 4) {
+      this.deleteImage()
     }
   },
 
+  // 隐藏动作列表
+  hideActionSheet() {
+    this.data.imageInAction = ''
+    this.setData({
+      showActionSheet: false,
+    });
+  },
+
   // 返回顶部按钮
-  goTop: function () {
+  goTop() {
     wx.pageScrollTo({
       scrollTop: 0,
       duration: 500
@@ -411,53 +406,33 @@ Page({
 
   // 拷贝图片链接
   copyLink() {
-    let that = this;
-    let tmp = decodeURIComponent(that.data.imageInAction);
-    tmp = tmp.substring(tmp.lastIndexOf('/') + 1, tmp.length);
-    tmp = "https://img.naomi.pub/" + tmp;
-    console.log('copy_image_url', tmp);
+    let url = decodeURIComponent(this.data.imageInAction);
+    url = "https://img.naomi.pub/" + url.substring(url.lastIndexOf('/') + 1, url.length);
+    console.log('copy_image_url', url);
 
     wx.setClipboardData({
-      data: tmp,
+      data: url,
       success: () => {
-        Notify({
-          type: 'success',
-          message: '复制成功',
-          safeAreaInsetTop: true
-        });
+        this.notifyMessage('success', '复制成功')
       },
       fail: () => {
-        Notify({
-          type: 'fail',
-          message: '复制失败',
-          safeAreaInsetTop: true
-        });
+        this.notifyMessage('fail', '复制失败')
       },
     });
   },
 
   // 下载图片
   downloadImage() {
-    let that = this;
-    Notify({
-      type: 'primary',
-      message: '正在保存图片…',
-      safeAreaInsetTop: true
-    });
-    console.log('download_image_url', that.data.imageInAction);
+    this.notifyMessage('primary', '正在保存图片')
+    console.log('download_image_url', this.data.imageInAction);
     wx.downloadFile({
-      url: that.data.imageInAction,
+      url: this.data.imageInAction,
       type: 'image',
       success: (resp) => {
         wx.saveImageToPhotosAlbum({
           filePath: resp.tempFilePath,
           success: (resp) => {
-            Notify({
-              type: 'success',
-              duration: 1000,
-              message: '图片保存成功',
-              safeAreaInsetTop: true
-            });
+            this.notifyMessage('success', '图片保存成功')
           },
           fail: (resp) => {
             console.log('fail', resp);
@@ -471,7 +446,7 @@ Page({
       fail: (resp) => {
         console.log('fail', resp);
       },
-    });
+    })
   },
 
   // 删除图片
@@ -482,13 +457,9 @@ Page({
     var m = imageUrl.match(/^https:\/\/[^\/]+\/([^#?]+)/);
     var Key = m && m[1] || '';
     if (Key) {
-      Notify({
-        type: 'primary',
-        duration: 1000,
-        message: '正在删除图片…',
-        safeAreaInsetTop: true
-      });
-      that.data.imageInAction = ''
+      this.notifyMessage('primary', '正在删除图片', 1000)
+      this.data.imageInAction = ''
+
       cos.deleteObject({
         Bucket: config.Bucket,
         Region: config.Region,
@@ -505,122 +476,54 @@ Page({
             });
             that.renderAlbumList();
           }
-          Notify({
-            type: 'success',
-            duration: 1000,
-            message: '图片删除成功',
-            safeAreaInsetTop: true
-          });
+          this.notifyMessage('success', '图片删除成功')
         } else {
-          Notify({
-            type: 'danger',
-            duration: 1000,
-            message: '图片删除失败',
-            safeAreaInsetTop: true
-          });
+          this.notifyMessage('fail', '图片删除失败')
         }
       });
     }
   },
 
-  // 隐藏动作列表
-  hideActionSheet() {
-    this.data.imageInAction = ''
-    this.setData({
-      showActionSheet: false,
-    });
-  },
-
-  // 返回对话框
-  confirm(e) {
-    if (e.detail.item.text == "取消") {
-      this.data.dialog.enable = !this.data.dialog.enable
-      this.setData({
-        dialog: this.data.dialog.enable
-      })
-    } else if (e.detail.item.text == "确认") {
-      if (this.data.dialog.type == "back") {
-        wx.disableAlertBeforeUnload()
-        wx.navigateBack({
-          delta: 1,
-        })
-      } else if (this.data.dialog.type == "delete") {
-        this.data.dialog.enable = !this.data.dialog.enable
-        this.setData({
-          dialog: this.data.dialog.enable
-        })
-        this.deleteImage()
-        this.data.imageInAction = ''
-      }
-    }
-  },
-
   // 文件夹选择
-  bindPickerChange: function (e) {
-    console.log('picker发送选择改变，当前文件夹为', this.data.folder[e.detail.value])
+  bindPickerChange(e) {
+    console.log('picker发送选择改变，当前文件夹为', this.data.toolBar.folder[e.detail.value])
+    this.data.toolBar.deeper = e.detail;
     this.setData({
-      selectFolder: e.detail.value,
-      layoutList: [],
-      albumList: [],
+      toolBar: this.data.toolBar
     })
-    var that = this;
-    this.renderAlbumList();
-    this.getAlbumList(function (list) {
-      list = that.data.albumList.concat(list || {});
-      if (!list.length) {
-        list = [];
-      }
-      list = list.reverse();
-      that.setData({
-        'albumList': list
-      });
-      that.renderAlbumList();
-    });
+    this.render()
   },
 
   // 深度遍历开关
-  checkboxChange: function (e) {
-    console.log('checkbox发送选择改变，当前深度遍历为', e.detail.value != '' ? '开启' : '关闭')
-    this.data.deeper = e.detail.value != 'deepFold' ? false : true;
-
+  checkboxChange(e) {
+    console.log('checkbox发送选择改变，当前深度遍历为', e.detail ? '开启' : '关闭')
+    this.data.toolBar.deeper = e.detail;
     this.setData({
-      layoutList: [],
-      albumList: [],
+      toolBar: this.data.toolBar
     })
-    var that = this;
-    this.renderAlbumList();
-    this.getAlbumList(function (list) {
-      list = that.data.albumList.concat(list || {});
-      if (!list.length) {
-        list = [];
-      }
-      list = list.reverse();
-      that.setData({
-        'albumList': list
-      });
-      that.renderAlbumList();
-    });
+    this.render()
   },
 
   // 下一页按钮
   nextPage() {
     console.log(this.data.marker)
-    this.setData({
-      layoutList: [],
-      albumList: [],
-    })
-    var that = this;
-    this.renderAlbumList();
-    this.getAlbumList(function (list) {
-      list = that.data.albumList.concat(list || {});
-      if (!list.length) {
-        list = [];
-      }
-      list = list.reverse();
-      that.setData({
-        'albumList': list
-      });
-      that.renderAlbumList();
-    }, that.data.marker);
+    this.render(this.data.marker)
   },
+
+  notifyMessage(type, text, duration = 3000) {
+    Notify({
+      type: type,
+      duration: duration,
+      message: text,
+      safeAreaInsetTop: true
+    });
+  },
+
+  loadingMessage(status, text, progress = null) {
+    return {
+      enable: status,
+      text: text,
+      progress: progress
+    }
+  }
 });
