@@ -1,5 +1,5 @@
-var util = require('../../lib/util');
-var config = require('../../config');
+const util = require("../../lib/util");
+const config = require("../../config");
 const app = getApp();
 
 var cos = app.globalData.cos;
@@ -8,7 +8,7 @@ Page({
   data: {
     message: {}
   },
-  onLoad: function () { },
+  onLoad: function () {},
   onShareAppMessage: function (res) {
     return {
       title: 'Naomi 相册',
@@ -166,7 +166,10 @@ Page({
 
     const canvas = await new Promise((resolve, reject) => {
       query.select('#canvas')
-        .fields({ node: true, size: true })
+        .fields({
+          node: true,
+          size: true
+        })
         .exec(async (item) => {
           const width = item[0].width
           const height = item[0].height
@@ -179,10 +182,10 @@ Page({
           canvas.height = height * dpr
           ctx.scale(dpr, dpr)
 
-          const image = canvas.createImage();//创建image       
-          image.src = res;//指定路径为getImageInfo的文件
+          const image = canvas.createImage(); //创建image       
+          image.src = res; //指定路径为getImageInfo的文件
           image.onload = () => {
-            ctx.drawImage(image, 0, 0, width, height)//图片加载完成时draw
+            ctx.drawImage(image, 0, 0, width, height) //图片加载完成时draw
             resolve(canvas)
           }
         })

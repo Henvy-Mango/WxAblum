@@ -14,5 +14,8 @@
     "url": "https://git.naomi.pub/naomi/Album.git"
   },
   "author": "Naomi",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@vant/weapp": "^1.6.8"
+  }
 }
