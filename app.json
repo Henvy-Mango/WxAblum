@@ -3,8 +3,7 @@
   "pages": [
     "pages/index/index",
     "pages/preview/preview",
-    "pages/album/album",
-    "pages/album2/album"
+    "pages/album/album"
   ],
   "window": {
     "navigationBarBackgroundColor": "#9dbdc6",
