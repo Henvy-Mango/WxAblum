@@ -18,5 +18,6 @@
 	<view class="page-btn-wrap">
 		<button class="page-btn" bindtap="gotoAlbum">云相册</button>
 	</view>
+	<image src="/images/smile.png" style="width: 207rpx; height: 197rpx; position: absolute; bottom: -42px; left: 453rpx; top: 702rpx; display: block; box-sizing: border-box"/>
 	<view class="page-tips2" style="margin-bottom:50rpx;">● 请不要当网盘用(T ^ T)</view>
 </view>
