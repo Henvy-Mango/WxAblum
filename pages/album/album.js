@@ -43,17 +43,17 @@ Page({
 
     // 动作命令列表
     Actions: [{
-        name: '返回顶部',
-        value: 1
-      },
-      {
-        name: '复制图片链接',
-        value: 2
-      },
-      {
-        name: '保存到本地',
-        value: 3
-      }
+      name: '返回顶部',
+      value: 1
+    },
+    {
+      name: '复制图片链接',
+      value: 2
+    },
+    {
+      name: '保存到本地',
+      value: 3
+    }
     ],
 
     // 当前操作的图片
@@ -153,7 +153,7 @@ Page({
         }
         var list =
           util.qSort((data && data.Contents || []).filter(item => /\.(jpg|png|gif|jpeg|pjp|pjpeg|jfif|xbm|tif|svgz|webp|ico|bmp|svg)$/.test(item.Key) && /^(?!.*CDN).*$/.test(item.Key)))
-          .map(item => 'https://' + config.Bucket + '.cos.' + config.Region + '.myqcloud.com/' + util.camSafeUrlEncode(item.Key).replace(/%2F/g, '/'));
+            .map(item => 'https://' + config.Bucket + '.cos.' + config.Region + '.myqcloud.com/' + util.camSafeUrlEncode(item.Key).replace(/%2F/g, '/'));
         callback(list);
       } else {
         callback([]);
@@ -331,8 +331,9 @@ Page({
     let imageUrl = event.target.dataset.src;
     let previewIndex = this.data.albumList.indexOf(imageUrl);
     this.data.Actions.shift()
+    this.data.preview.slideDuration = 0
     this.setData({
-      slideDuration: 0,
+      preview: this.data.preview,
       Actions: this.data.Actions
     });
     this.data.preview.previewMode = true
