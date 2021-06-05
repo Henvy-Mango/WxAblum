@@ -2,23 +2,28 @@
 <canvas wx:for='{{upload}}' wx:for-index="index" type="2d" id='canvas-{{index}}' wx:key="index"
 	style="width:{{item.canvasWidth}}px;height:{{item.canvasHeight}}px;position:absolute;top:-999999px;left:-999999px;"></canvas>
 
-<van-nav-bar title="云相册" left-text="返回" left-arrow bind:click-left="goBackPage" placeholder="true" />
-
 <!-- 选项菜单 -->
 <van-action-sheet show="{{showActionSheet}}" actions="{{Actions}}" bind:close="hideActionSheet"
 	bind:select="selectActionSheet" cancel-text="返回" bind:cancel="hideActionSheet" />
 
+<!-- Dialog对话框 -->
+<van-dialog id="van-dialog" />
+
 <!-- Toast消息框 -->
 <van-notify id="van-notify" />
 
+<!-- 导航栏 -->
+<van-nav-bar title="云相册" left-text="返回" left-arrow bind:click-left="goBackPage" placeholder="true" />
+
 <!-- 加载框 -->
 <view wx:if="{{loading.enable}}" class="loading">
-	<van-loading size="24px">{{loading.text}}...{{loading.progress!=null ? loading.progress : ''}}{{loading.progress!=null
-		? '%' : ''}}</van-loading>
+	<van-loading size="24px">{{loading.text}}...{{loading.progress!=null ? loading.progress + '%' : ''}}</van-loading>
 </view>
 
 <!-- 图片列表容器 -->
 <scroll-view class="container" scroll-y="true" style="display: {{!preview.previewMode ? 'block' : 'none'}};">
+
+	<!-- 工具类ToolBar -->
 	<view class="top-button">
 		<van-checkbox class="upload-tips" style="position:absolute;right:15rpx;top:18rpx;" shape="square" icon-size="45rpx"
 			bind:change="checkboxChange" value="{{toolBar.deeper}}">深度遍历</van-checkbox>
@@ -29,39 +34,46 @@
 		</picker>
 	</view>
 
+	<!-- 相册列表 -->
 	<view class="album-container">
 		<view class="item-group" wx:for="{{layoutList}}" wx:for-item="group" wx:for-index="rowIndex" wx:key="group">
 			<block wx:for="{{group}}" wx:for-item="item" wx:for-index="cellIndex" wx:key="item">
 
+				<!-- 上传预留位 -->
 				<block wx:if="{{item.type === 'add'}}">
 					<view class="upload-add" bindtap="chooseImage">
 						<a class="tips">点击或长按图片</a>
-						<image src="/images/camera.png" mode="aspectFit"></image>
+						<image src="https://img.naomi.pub/CDN/camera.png" mode="aspectFit" />
 						<text>上传图片</text>
 					</view>
 				</block>
 
+				<!-- 相册图片预留位 -->
 				<block wx:elif="{{item.type == undefined && item!=0}}">
-					<image lazy-load="true" bindtap="enterPreviewMode" bindlongpress="showActions" data-src="{{item}}"
-						class="album-item" src="{{item+'!preview'}}" mode="aspectFill"></image>
+					<van-image width="244rpx" height="242rpx" lazy-load fit="cover" class="album-item" bindtap="enterPreviewMode"
+						bindlongpress="showActions" src="{{item+'!preview'}}" data-src="{{item}}" />
 				</block>
 
+				<!-- 下一页预留位 -->
 				<block wx:elif="{{item.type === 'next'}}">
 					<view class="upload-add-outer">
 						<view class="upload-add" bindtap="nextPage">
-							<image src="/images/next.gif" mode="aspectFit"></image>
+							<image src="https://img.naomi.pub/CDN/next.gif" mode="aspectFit" />
 							<text>下一页</text>
 						</view>
 					</view>
 				</block>
 
+				<!-- 末尾预留位 -->
 				<block wx:elif="{{item.type==='done'}}">
-					<view class="upload-add" bindlongpress="rightToDelete">
-						<image src="/images/done.png" mode="aspectFit"></image>
+					<!-- 开启管理员模式 -->
+					<view class="upload-add">
+						<image src="https://img.naomi.pub/CDN/done.png" mode="aspectFit" bindlongpress="rightOfDelete" />
 						<text style="font-size:36rpx;">没有更多图片</text>
 					</view>
 				</block>
 
+				<!-- 无图透明 -->
 				<block wx:else>
 					<view class="album-item empty"></view>
 				</block>
@@ -77,7 +89,7 @@
 	<block wx:for="{{albumList}}" wx:for-item="item" wx:key="item">
 		<swiper-item>
 			<image wx:if="{{preview.previewMode}}" data-src="{{item}}" bindlongpress="showActions" lazy-load="true"
-				src="{{item + '!weixin'}}" mode="aspectFit"></image>
+				src="{{item + '!weixin'}}" mode="aspectFit" />
 		</swiper-item>
 	</block>
 </swiper>
