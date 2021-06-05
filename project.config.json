@@ -27,15 +27,11 @@
       "outputPath": ""
     },
     "enableEngineNative": false,
+    "bundle": true,
     "useIsolateContext": true,
     "useCompilerModule": false,
     "userConfirmedUseCompilerModuleSwitch": false,
     "userConfirmedBundleSwitch": false,
-    "packNpmManually": true,
-    "packNpmRelationList": [{
-      "packageJsonPath": "./package.json",
-      "miniprogramNpmDistDir": "./"
-    }],
     "minifyWXSS": true
   },
   "compileType": "miniprogram",
