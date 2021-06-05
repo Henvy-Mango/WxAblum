@@ -4,6 +4,7 @@ const app = getApp();
 var cos = app.globalData.cos;
 
 import Notify from '../../miniprogram_npm/@vant/weapp/notify/notify';
+import Dialog from '../../miniprogram_npm/@vant/weapp/dialog/dialog';
 
 Page({
   data: {
@@ -43,17 +44,17 @@ Page({
 
     // 动作命令列表
     Actions: [{
-      name: '返回顶部',
-      value: 1
-    },
-    {
-      name: '复制图片链接',
-      value: 2
-    },
-    {
-      name: '保存到本地',
-      value: 3
-    }
+        name: '返回顶部',
+        value: 1
+      },
+      {
+        name: '复制图片链接',
+        value: 2
+      },
+      {
+        name: '保存到本地',
+        value: 3
+      }
     ],
 
     // 当前操作的图片
@@ -153,7 +154,7 @@ Page({
         }
         var list =
           util.qSort((data && data.Contents || []).filter(item => /\.(jpg|png|gif|jpeg|pjp|pjpeg|jfif|xbm|tif|svgz|webp|ico|bmp|svg)$/.test(item.Key) && /^(?!.*CDN).*$/.test(item.Key)))
-            .map(item => 'https://' + config.Bucket + '.cos.' + config.Region + '.myqcloud.com/' + util.camSafeUrlEncode(item.Key).replace(/%2F/g, '/'));
+          .map(item => 'https://' + config.Bucket + '.cos.' + config.Region + '.myqcloud.com/' + util.camSafeUrlEncode(item.Key).replace(/%2F/g, '/'));
         callback(list);
       } else {
         callback([]);
@@ -376,15 +377,22 @@ Page({
 
   // 动作列表选择
   selectActionSheet(e) {
-    let tmp = e.detail.value
-    if (tmp == 1) {
+    let select = e.detail.value
+    if (select == 1) {
       this.goTop()
-    } else if (tmp == 2) {
+    } else if (select == 2) {
       this.copyLink()
-    } else if (tmp == 3) {
+    } else if (select == 3) {
       this.downloadImage()
-    } else if (tmp == 4) {
-      this.deleteImage()
+    } else if (select == 4) {
+      let url = this.data.imageInAction
+      Dialog.confirm({
+          title: '确定删除'
+        })
+        .then(() => {
+          this.deleteImage(url)
+        })
+        .catch(() => {});
     }
   },
 
@@ -451,10 +459,9 @@ Page({
   },
 
   // 删除图片
-  deleteImage() {
+  deleteImage(imageInAction) {
     let that = this;
-    var tmp = this.data.imageInAction;
-    let imageUrl = decodeURIComponent(tmp);
+    let imageUrl = decodeURIComponent(imageInAction);
     var m = imageUrl.match(/^https:\/\/[^\/]+\/([^#?]+)/);
     var Key = m && m[1] || '';
     if (Key) {
@@ -468,7 +475,7 @@ Page({
       }, (err, data) => {
         if (data) {
           console.log(data)
-          let index = that.data.albumList.indexOf(tmp);
+          let index = that.data.albumList.indexOf(imageInAction);
           if (~index) {
             let albumList = that.data.albumList;
             albumList.splice(index, 1);
@@ -485,10 +492,26 @@ Page({
     }
   },
 
+  rightOfDelete(e) {
+    if (this.data.Actions.length == 3) {
+      console.log("开启管理员模式！")
+      this.data.Actions.push({
+        name: '删除图片',
+        color: '#ee0a24',
+        value: 4
+      })
+      this.setData({
+        Actions: this.data.Actions
+      })
+    } else {
+      console.log("重复开启管理员模式！")
+    }
+  },
+
   // 文件夹选择
   bindPickerChange(e) {
     console.log('picker发送选择改变，当前文件夹为', this.data.toolBar.folder[e.detail.value])
-    this.data.toolBar.deeper = e.detail;
+    this.data.toolBar.selectFolder = e.detail.value;
     this.setData({
       toolBar: this.data.toolBar
     })
