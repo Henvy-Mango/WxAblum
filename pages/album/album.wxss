@@ -21,7 +21,7 @@ page {
   flex: 1;
   text-align: center;
   margin: 0 3rpx 3rpx 3rpx;
-  width: 242rpx;
+  width: 244rpx;
   height: 242rpx;
   line-height: 242rpx;
 }
@@ -145,61 +145,12 @@ action-sheet-item.warn {
   color: #e64340;
 }
 
-/* navigationBar.wxss */
-.navigation-container {
-  position: absolute;
-  width: 100%;
-  z-index: 99;
-  top: 0;
-  left: 0;
-  background-color: #9dbdc6;
-}
-
-.navigation-bar {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.navigation-buttons {
-  position: absolute;
-  align-items: center;
-  top: 24rpx;
-  left: 30rpx;
-  background-color: transparent;
-}
-
-.nav-img {
-  height: 24px;
-  width: 15px;
-}
-
-.navigation-title {
-  position: absolute;
-  left: 104rpx;
-  right: 104rpx;
-  top: 5rpx;
-  text-align: center;
-  font-size: 17px;
-  font-weight: bold;
-  color: #272f32;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .loading {
   height: 30px;
-  background: #eff3f5;
+  background: #e7eff7;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.loading image {
-  width: 25px;
-  height: 25px;
 }
 
 .loading text {
