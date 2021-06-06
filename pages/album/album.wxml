@@ -52,11 +52,9 @@
 
 				<!-- 下一页预留位 -->
 				<block wx:elif="{{item.type === 'next'}}">
-					<view class="upload-add-outer">
-						<view class="upload-add" bindtap="nextPage">
-							<image src="https://img.naomi.pub/CDN/next.gif" mode="aspectFit" />
-							<text>下一页</text>
-						</view>
+					<view class="upload-add" bindtap="nextPage">
+						<image src="https://img.naomi.pub/CDN/next.gif" mode="aspectFit" />
+						<text>下一页</text>
 					</view>
 				</block>
 

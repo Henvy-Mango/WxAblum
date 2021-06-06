@@ -43,20 +43,6 @@ page {
   margin: 0 20rpx;
 }
 
-.upload-wrap {
-  color: #ccc;
-  background-color: #fff;
-  border: 1px solid #888;
-  position: absolute;
-  left: 6rpx;
-  top: 86rpx;
-  width: 242rpx;
-  height: 239rpx;
-  text-align: center;
-  line-height: 240rpx;
-  overflow: hidden;
-}
-
 .upload-add {
   display: block;
   position: relative;
@@ -65,7 +51,6 @@ page {
   width: 244rpx;
   height: 242rpx;
   line-height: 242rpx;
-  color: #ccc;
   overflow: hidden;
   box-sizing: border-box;
   background: #fff;
@@ -93,37 +78,6 @@ page {
   width: 240rpx;
   bottom: 85rpx;
   font-size: 24rpx;
-  color: #888;
-}
-
-.upload-image {
-  color: #ccc;
-  background-color: #fff;
-  border: 1px solid #888;
-  position: absolute;
-  left: 6rpx;
-  top: 86rpx;
-  width: 240rpx;
-  height: 239rpx;
-  text-align: center;
-  line-height: 240rpx;
-  overflow: hidden;
-}
-
-.upload-image image {
-  position: absolute;
-  left: 0;
-  width: 242rpx;
-  height: 200rpx;
-  top: 200rpx;
-}
-
-.upload-image text {
-  position: absolute;
-  width: 242rpx;
-  height: 50rpx;
-  left: 0;
-  bottom: 20rpx;
   color: #888;
 }
 
@@ -157,3 +111,5 @@ action-sheet-item.warn {
   font-size: 15px;
   color: #888;
 }
+
+@import 'album-wxa-auto-dark.wxss'

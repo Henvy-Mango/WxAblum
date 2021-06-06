@@ -1,3 +1,4 @@
 page {
     background-color: #fff;
 }
+@import 'app-wxa-auto-dark.wxss'
