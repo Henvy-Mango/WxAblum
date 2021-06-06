@@ -1,7 +1,3 @@
-<!-- 压缩图片用的画布 -->
-<canvas wx:for='{{upload}}' wx:for-index="index" type="2d" id='canvas-{{index}}' wx:key="index"
-	style="width:{{item.canvasWidth}}px;height:{{item.canvasHeight}}px;position:absolute;top:-999999px;left:-999999px;"></canvas>
-
 <!-- 选项菜单 -->
 <van-action-sheet show="{{showActionSheet}}" actions="{{Actions}}" bind:close="hideActionSheet"
 	bind:select="selectActionSheet" cancel-text="返回" bind:cancel="hideActionSheet" />
@@ -41,7 +37,7 @@
 
 				<!-- 上传预留位 -->
 				<block wx:if="{{item.type === 'add'}}">
-					<view class="upload-add" bindtap="chooseImage">
+					<view class="upload-add" bindtap="goToUpload">
 						<a class="tips">点击或长按图片</a>
 						<image src="https://img.naomi.pub/CDN/camera.png" mode="aspectFit" />
 						<text>上传图片</text>
