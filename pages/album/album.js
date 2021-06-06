@@ -27,7 +27,7 @@ Page({
       progress: null
     },
 
-    // 下一页标记
+    // 下一页标记，已读取的文件数
     marker: 0,
 
     // 图片布局列表（二维数组，由`albumList`计算而得）
@@ -70,7 +70,11 @@ Page({
   },
 
   onLoad() {
+    // 启用返回提醒
     wx.enableAlertBeforeUnload()
+
+    // 获取文件夹信息
+    this.getAlbumDir();
   },
 
   onShow() {
@@ -89,7 +93,6 @@ Page({
       albumList: []
     })
 
-    this.getAlbumDir();
     // 初始化布局
     this.renderAlbumList();
 
@@ -110,6 +113,11 @@ Page({
   // 获取文件夹
   getAlbumDir() {
     let that = this;
+
+    var {
+      toolBar
+    } = this.data
+
     cos.getBucket({
       Bucket: config.Bucket,
       Region: config.Region,
@@ -118,39 +126,45 @@ Page({
     }, (err, data) => {
       if (data) {
         let list = data.CommonPrefixes.map(item => item.Prefix).filter(item => /^(?!.*CDN).*$/.test(item))
-        that.data.toolBar.folder = ['/'].concat(list)
+        toolBar.folder = ['/'].concat(list)
         that.setData({
-          toolBar: that.data.toolBar
+          toolBar
         })
       }
     })
   },
 
   // 获取相册列表
-  getAlbumList(callback, marker = "") {
+  getAlbumList(callback, markerArg = "") {
     let that = this;
+
+    var {
+      toolBar,
+      marker
+    } = this.data
+
     this.setData({
       loading: this.loadingMessage(true, "加载中")
     })
-    var prefix = this.data.toolBar.folder[this.data.toolBar.selectFolder];
+    var prefix = toolBar.folder[toolBar.selectFolder];
     if (prefix == '/')
       prefix = config.Prefix
-    var delimiter = this.data.toolBar.deeper ? config.Delimiter : '/';
+    var delimiter = toolBar.deeper ? config.Delimiter : '/';
 
     cos.getBucket({
       Bucket: config.Bucket,
       Region: config.Region,
       Prefix: prefix,
-      Marker: marker,
+      Marker: markerArg,
       Delimiter: delimiter,
       MaxKeys: 100,
     }, (err, data) => {
       if (data) {
         console.log(data)
         if (data.IsTruncated == "true") {
-          that.data.marker = data.NextMarker
+          marker = data.NextMarker
         } else {
-          that.data.marker = 0
+          marker = 0
         }
         var list =
           util.qSort((data && data.Contents || []).filter(item => /\.(jpg|png|gif|jpeg|pjp|pjpeg|jfif|xbm|tif|svgz|webp|ico|bmp|svg)$/.test(item.Key) && /^(?!.*CDN).*$/.test(item.Key)))
@@ -167,15 +181,20 @@ Page({
 
   // 渲染相册列表
   renderAlbumList() {
-    let layoutColumnSize = this.data.layoutColumnSize;
+    var {
+      albumList,
+      layoutColumnSize,
+      marker
+    } = this.data
+
     let layoutList = [];
-    var imageList = [].concat(this.data.albumList);
+    var imageList = [].concat(albumList);
 
     imageList.unshift({
       type: 'add'
     });
 
-    layoutList = util.listToMatrix(imageList, layoutColumnSize, this.data.marker);
+    layoutList = util.listToMatrix(imageList, layoutColumnSize, marker);
 
     this.setData({
       layoutList,
@@ -190,26 +209,35 @@ Page({
 
   // 进入预览模式
   enterPreviewMode(event) {
-    if (this.data.showActionSheet) {
+    var {
+      albumList,
+      Actions,
+      preview,
+      showActionSheet
+    } = this.data
+
+    if (showActionSheet) {
       return;
     }
     let imageUrl = event.target.dataset.src;
-    let previewIndex = this.data.albumList.indexOf(imageUrl);
-    this.data.Actions.shift()
-    this.data.preview.slideDuration = 0
+    let previewIndex = albumList.indexOf(imageUrl);
+    Actions.shift()
+    preview.slideDuration = 0
     this.setData({
-      preview: this.data.preview,
-      Actions: this.data.Actions
+      preview,
+      Actions
     });
-    this.data.preview.previewMode = true
-    this.data.preview.previewIndex = previewIndex
+
+    preview.previewMode = true
+    preview.previewIndex = previewIndex
     setTimeout(() => {
       this.setData({
-        preview: this.data.preview
+        preview
       });
       setTimeout(() => {
+        preview.slideDuration = 400
         this.setData({
-          slideDuration: 400
+          preview
         });
       }, 400);
     });
@@ -217,17 +245,22 @@ Page({
 
   // 退出预览模式
   leavePreviewMode() {
-    this.data.preview.previewMode = false
-    this.data.preview.previewIndex = 0
+    var {
+      Actions,
+      preview
+    } = this.data
 
-    this.data.Actions.unshift({
+    preview.previewMode = false
+    preview.previewIndex = 0
+
+    Actions.unshift({
       name: '返回顶部',
       value: 1
     })
 
     this.setData({
-      preview: this.data.preview,
-      Actions: this.data.Actions
+      preview,
+      Actions
     })
   },
 
