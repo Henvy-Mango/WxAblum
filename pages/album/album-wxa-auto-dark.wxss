@@ -1,0 +1,34 @@
+/* 
+此文件为开发者工具生成，生成时间: 2021/6/7 上午1:41:02
+使用方法：
+在 album.wxss 文件末尾引入样式
+```
+@import "./album-wxa-auto-dark.wxss";
+```
+ */
+
+@media (prefers-color-scheme: dark) {
+    page {
+        background-color: rgb(99, 110, 116);
+    }
+
+    .top-button {
+        background: #b8c4ca;
+    }
+
+    .upload-tips {
+        color: rgb(0, 0, 0);
+    }
+
+    .upload-add {
+       background: rgb(141, 155, 163);
+    }
+
+    .upload-add text {
+        color: rgb(0, 0, 0);
+    }
+
+    .tips {
+        color: rgb(0, 0, 0);
+    }
+}
