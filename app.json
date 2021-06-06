@@ -2,7 +2,6 @@
   "cloud": true,
   "pages": [
     "pages/index/index",
-    "pages/preview/preview",
     "pages/album/album",
     "pages/album/uploader/uploader"
   ],
@@ -11,8 +10,5 @@
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "Naomi 相册"
   },
-  "sitemapLocation": "sitemap.json",
-  "useExtendedLib": {
-    "weui": true
-  }
+  "sitemapLocation": "sitemap.json"
 }

@@ -311,9 +311,16 @@ Page({
 
     const tempFilePath = await wx.canvasToTempFilePath({
       canvas: canvas,
-      quality: 0.8,
-    }, that).then(res => {
-      console.log(res.tempFilePath)
+      quality: 0.5,
+      width: canvas.width,
+      height: canvas.height,
+      destWidth: canvas.width,
+      destHeight: canvas.height,
+      fileType: "jpg",
+    }, that).then(res => wx.compressImage({
+      src: res.tempFilePath,
+      quality: 50
+    })).then((res) => {
       return res.tempFilePath
     })
 
