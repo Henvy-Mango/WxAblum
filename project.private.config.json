@@ -13,8 +13,14 @@
     "miniprogram": {
       "list": [
         {
-          "name": "pages/album/album",
+          "name": "album",
           "pathName": "pages/album/album",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "uploader",
+          "pathName": "pages/album/uploader/uploader",
           "query": "",
           "scene": null
         }
