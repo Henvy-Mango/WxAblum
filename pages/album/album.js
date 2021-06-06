@@ -1,7 +1,7 @@
 const config = require('../../config');
 const util = require('../../lib/util');
 const app = getApp();
-var cos = app.globalData.cos;
+const cos = app.globalData.cos;
 
 import Notify from '../../miniprogram_npm/@vant/weapp/notify/notify';
 import Dialog from '../../miniprogram_npm/@vant/weapp/dialog/dialog';
@@ -29,9 +29,6 @@ Page({
 
     // 下一页标记
     marker: 0,
-
-    //上传图片列表
-    upload: [],
 
     // 图片布局列表（二维数组，由`albumList`计算而得）
     layoutList: [],
@@ -74,6 +71,9 @@ Page({
 
   onLoad() {
     wx.enableAlertBeforeUnload()
+  },
+
+  onShow() {
     this.render();
   },
 
@@ -182,145 +182,9 @@ Page({
     });
   },
 
-  // 从相册选择照片或拍摄照片
-  chooseImage() {
-    var that = this;
-    wx.chooseImage({
-      count: 9,
-      sizeType: ['original', 'compressed'],
-      sourceType: ['album', 'camera']
-    }).then(res => {
-      that.notifyMessage('primary', '正在上传图片', 2000)
-      that.setData({
-        loading: this.loadingMessage(true, "上传中"),
-        upload: res.tempFilePaths.map(item => {
-          return {
-            path: item,
-            canvasWidth: 0,
-            canvasHeight: 0,
-          }
-        })
-      })
-
-      return res.tempFilePaths
-    }).then(res => {
-      res.forEach((filePath, index) => {
-        that.getCanvasDetail(filePath, index)
-          .then(res => that.getCanvasImg(res))
-          .then(res => util.checkSafePic(res))
-          .then(res => {
-            if (res) {
-              var Key = util.getRandFileName(filePath);
-              filePath && cos.postObject({
-                Bucket: config.Bucket,
-                Region: config.Region,
-                Key: Key,
-                FilePath: filePath
-              }, (err, data) => {
-                if (data) {
-                  let albumList = that.data.albumList;
-                  // debugger;
-                  albumList.unshift('https://' + data.Location);
-                  that.setData({
-                    albumList,
-                  });
-                  that.renderAlbumList();
-                }
-              })
-            } else {
-              that.setData({
-                message: {
-                  enable: true,
-                  type: "error",
-                  text: "第" + (index + 1).toString() + "张图片不合法",
-                  delay: 3000,
-                },
-              })
-            }
-          })
-      })
-    }).then(() => that.setData({
-      loading: this.loadingMessage(false, "上传中"),
-    }))
-  },
-
-  // 计算图片缩小后的尺寸
-  getCanvasDetail(tempFilePaths, index) {
-    var that = this;
-    return new Promise((resolve, reject) => {
-      //-----返回选定照片的本地文件路径列表，获取照片信息-----------
-      wx.getImageInfo({
-        src: tempFilePaths,
-        success: (res) => {
-          //---------利用canvas压缩图片--------------
-          var ratio = 2;
-          var canvasWidth = res.width //图片原始长宽
-          var canvasHeight = res.height
-          while (canvasWidth > 120 || canvasHeight > 120) { // 保证宽高在400以内
-            canvasWidth = Math.trunc(res.width / ratio)
-            canvasHeight = Math.trunc(res.height / ratio)
-            ratio++;
-          }
-          console.log("图片压缩后大小为" + canvasWidth + "x" + canvasHeight)
-
-          that.data.upload[index].canvasWidth = canvasWidth
-          that.data.upload[index].canvasHeight = canvasHeight
-          that.setData({
-            upload: that.data.upload
-          })
-          resolve({
-            canvasWidth: canvasWidth,
-            canvasHeight: canvasHeight,
-            index: index,
-            path: tempFilePaths
-          })
-        },
-        fail: (res) => {
-          console.log(res.errMsg)
-          reject(res)
-        }
-      })
-    })
-  },
-
-  // 使用canvas画布，获取压缩后的图片
-  async getCanvasImg(res) {
-    var that = this;
-    //----------绘制图形并取出图片路径--------------
-    const query = wx.createSelectorQuery();
-    const canvas = await new Promise((resolve, reject) => {
-      query.select('#canvas-' + res.index)
-        .fields({
-          node: true,
-          size: true
-        })
-        .exec(async (item) => {
-          const width = item[0].width
-          const height = item[0].height
-
-          const canvas = item[0].node
-          const ctx = canvas.getContext('2d')
-
-          const dpr = wx.getSystemInfoSync().pixelRatio
-          canvas.width = width * dpr
-          canvas.height = height * dpr
-          ctx.scale(dpr, dpr)
-
-          const image = canvas.createImage(); //创建image       
-          image.src = res.path; //指定路径为getImageInfo的文件
-          image.onload = () => {
-            ctx.drawImage(image, 0, 0, width, height) //图片加载完成时draw
-            resolve(canvas)
-          }
-        })
-    })
-
-    return wx.canvasToTempFilePath({
-      canvas: canvas,
-      quality: 0.8,
-    }, that).then(res => {
-      console.log(res.tempFilePath)
-      return res.tempFilePath
+  goToUpload() {
+    wx.navigateTo({
+      url: './uploader/uploader',
     })
   },
 
@@ -492,6 +356,7 @@ Page({
     }
   },
 
+  // 开启管理员模式
   rightOfDelete(e) {
     if (this.data.Actions.length == 3) {
       console.log("开启管理员模式！")

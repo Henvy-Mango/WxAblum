@@ -1,0 +1,12 @@
+/* pages/album/uploader/uploader.wxss */
+.uploadArea {
+  padding-top: 7%;
+  padding-left: 20rpx;
+}
+
+.uploadBtn {
+  width: 94%;
+  position: absolute;
+  bottom: 30rpx;
+  padding: 10rpx 22rpx;
+}
