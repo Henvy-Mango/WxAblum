@@ -12,9 +12,6 @@ exports.main = async (event, context) => {
     if (value) {
       imageR = await cloud.openapi.security.imgSecCheck({
         media: {
-          header: {
-            'Content-Type': 'application/octet-stream'
-          },
           contentType: 'image/png',
           value: Buffer.from(value)
         }
