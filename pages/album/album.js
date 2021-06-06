@@ -358,12 +358,16 @@ Page({
   // 删除图片
   deleteImage(imageInAction) {
     let that = this;
+
+    var {
+      albumList
+    } = this.data
+
     let imageUrl = decodeURIComponent(imageInAction);
     var m = imageUrl.match(/^https:\/\/[^\/]+\/([^#?]+)/);
     var Key = m && m[1] || '';
     if (Key) {
       this.notifyMessage('primary', '正在删除图片', 1000)
-      this.data.imageInAction = ''
 
       cos.deleteObject({
         Bucket: config.Bucket,
@@ -372,9 +376,8 @@ Page({
       }, (err, data) => {
         if (data) {
           console.log(data)
-          let index = that.data.albumList.indexOf(imageInAction);
+          let index = albumList.indexOf(imageInAction);
           if (~index) {
-            let albumList = that.data.albumList;
             albumList.splice(index, 1);
             that.setData({
               albumList
@@ -391,15 +394,19 @@ Page({
 
   // 开启管理员模式
   rightOfDelete(e) {
-    if (this.data.Actions.length == 3) {
+    var {
+      Actions
+    } = this.data
+
+    if (Actions.length == 3) {
       console.log("开启管理员模式！")
-      this.data.Actions.push({
+      Actions.push({
         name: '删除图片',
         color: '#ee0a24',
         value: 4
       })
       this.setData({
-        Actions: this.data.Actions
+        Actions
       })
     } else {
       console.log("重复开启管理员模式！")
@@ -408,28 +415,37 @@ Page({
 
   // 文件夹选择
   bindPickerChange(e) {
-    console.log('picker发送选择改变，当前文件夹为', this.data.toolBar.folder[e.detail.value])
-    this.data.toolBar.selectFolder = e.detail.value;
+    var {
+      toolBar
+    } = this.data
+    console.log('picker发送选择改变，当前文件夹为', toolBar.folder[e.detail.value])
+    toolBar.selectFolder = e.detail.value;
     this.setData({
-      toolBar: this.data.toolBar
+      toolBar
     })
     this.render()
   },
 
   // 深度遍历开关
   checkboxChange(e) {
+    var {
+      toolBar
+    } = this.data
     console.log('checkbox发送选择改变，当前深度遍历为', e.detail ? '开启' : '关闭')
-    this.data.toolBar.deeper = e.detail;
+    toolBar.deeper = e.detail;
     this.setData({
-      toolBar: this.data.toolBar
+      toolBar
     })
     this.render()
   },
 
   // 下一页按钮
   nextPage() {
-    console.log(this.data.marker)
-    this.render(this.data.marker)
+    var {
+      marker
+    } = this.data
+    console.log(`marker值为${marker}`)
+    this.render(marker)
   },
 
   notifyMessage(type, text, duration = 3000) {
