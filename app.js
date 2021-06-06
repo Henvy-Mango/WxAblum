@@ -4,7 +4,6 @@ var api = require('./lib/api');
 const app = getApp();
 
 App({
-
   globalData: {
     cos: null
   },
