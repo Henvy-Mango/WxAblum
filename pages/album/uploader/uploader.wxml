@@ -12,6 +12,15 @@
     bind:after-read="afterRead" bind:delete="deleteImg" bind:oversize="overSizeImg" upload-text="选择图片" />
 </view>
 
+<!-- 选择上传文件夹 -->
+<view class="upload-tips">
+  <picker bindchange="bindPickerChange" value="{{toolBar.selectFolder}}" range="{{toolBar.folder}}">
+    <view class="upload-folder">
+      上传位置： {{toolBar.folder[toolBar.selectFolder]}}
+    </view>
+  </picker>
+</view>
+
 <view class="uploadBtn">
   <!-- 上传按钮 -->
   <van-button block type="primary" disabled="{{flag}}" loading="{{loading}}" loading-text="上传中…"

@@ -9,9 +9,57 @@ Page({
   data: {
     fileList: [],
     canvas: [],
+
+    // 按钮
     loading: false,
     message: "上传",
-    flag: false
+    flag: false,
+
+    toolBar: {
+      // 文件夹选择器
+      folder: ['/'],
+      selectFolder: 0,
+    },
+  },
+
+  onLoad() {
+    this.getAlbumDir()
+  },
+
+  // 获取文件夹
+  getAlbumDir() {
+    let that = this;
+
+    var {
+      toolBar
+    } = this.data
+
+    cos.getBucket({
+      Bucket: config.Bucket,
+      Region: config.Region,
+      Prefix: "",
+      Delimiter: "/",
+    }, (err, data) => {
+      if (data) {
+        let list = data.CommonPrefixes.map(item => item.Prefix).filter(item => /^(?!.*CDN).*$/.test(item))
+        toolBar.folder = ['/'].concat(list)
+        that.setData({
+          toolBar
+        })
+      }
+    })
+  },
+
+  // 文件夹选择
+  bindPickerChange(e) {
+    var {
+      toolBar
+    } = this.data
+    console.log('picker发送选择改变，当前文件夹为', toolBar.folder[e.detail.value])
+    toolBar.selectFolder = e.detail.value;
+    this.setData({
+      toolBar
+    })
   },
 
   beforeRead(event) {
@@ -109,7 +157,8 @@ Page({
 
   uploadList(event) {
     var {
-      fileList = []
+      fileList = [],
+        toolBar
     } = this.data
 
     if (fileList.length == 0) {
@@ -148,7 +197,7 @@ Page({
           cos.postObject({
             Bucket: config.Bucket,
             Region: config.Region,
-            Key: Key,
+            Key: toolBar.selectFolder == 0 ? '' : toolBar.folder[toolBar.selectFolder] + Key,
             FilePath: item.url
           }, (err, data) => {
             if (data.statusCode == 200) {
