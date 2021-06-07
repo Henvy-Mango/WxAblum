@@ -1,10 +1,13 @@
 const util = require("../../lib/util");
-const config = require("../../config");
-const app = getApp();
+const {
+  getMenu
+} = require('../../lib/api');
 
 Page({
   data: {},
-  onLoad: function () {},
+  onLoad: function () {
+    getMenu()
+  },
 
   // 前往相册页
   gotoAlbum() {

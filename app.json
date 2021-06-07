@@ -1,5 +1,6 @@
 {
   "cloud": true,
+  "darkmode": true,
   "pages": [
     "pages/index/index",
     "pages/album/album",
@@ -10,6 +11,5 @@
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "Naomi 相册"
   },
-  "sitemapLocation": "sitemap.json",
-  "darkmode": true
+  "sitemapLocation": "sitemap.json"
 }
