@@ -10,5 +10,6 @@
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "Naomi 相册"
   },
-  "sitemapLocation": "sitemap.json"
+  "sitemapLocation": "sitemap.json",
+  "darkmode": true
 }
