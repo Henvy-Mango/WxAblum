@@ -39,7 +39,8 @@
 				<block wx:if="{{item.type === 'add'}}">
 					<view class="upload-add" bindtap="goToUpload">
 						<a class="tips">点击或长按图片</a>
-						<image src="https://img.naomi.pub/CDN/camera.png" mode="aspectFit" />
+						<!-- <image src="https://img.naomi.pub/CDN/camera.png" mode="aspectFit" /> -->
+						<van-icon name="photograph" size="120rpx" style="position: absolute; top: 57rpx; left: 63rpx" />
 						<text>上传图片</text>
 					</view>
 				</block>
@@ -62,8 +63,9 @@
 				<block wx:elif="{{item.type==='done'}}">
 					<!-- 开启管理员模式 -->
 					<view class="upload-add">
-						<image src="https://img.naomi.pub/CDN/done.png" mode="aspectFit" bindlongpress="rightOfDelete" />
-						<text style="font-size:36rpx;">没有更多图片</text>
+						<!-- <image src="https://img.naomi.pub/CDN/done.png" mode="aspectFit" bindlongpress="rightOfDelete" /> -->
+						<van-icon name="smile" size="110rpx" style="position: absolute; top: 60rpx; left: 66rpx" />
+						<text style="font-size:36rpx;" bindlongpress="rightOfDelete">没有图片了</text>
 					</view>
 				</block>
 
