@@ -1,16 +1,50 @@
-<view class="top"></view>
-<view class="bottom"></view>
-<view class="main">
-	<view class="page-title">文件上传</view>
-	<view class="page-tips1">CDN流量仅有10G</view>
-	<view class="page-btn-wrap">
-		<button class="page-btn" bindtap="uploadImage">上传图片</button>
-		<button class="page-btn" bindtap="uploadVideo">上传视频</button>
-	</view>
-	<view class="page-title">云相册</view>
-	<view class="page-tips1">图片预览均缩放+裁剪，下载后为原尺寸</view>
-	<view class="page-btn-wrap">
-		<button class="page-btn" bindtap="gotoAlbum">云相册</button>
-	</view>
-	<view class="page-tips2" style="margin-bottom:50rpx;">● 请不要当网盘用(T ^ T)</view>
+<!-- <image class="backImg" src="{{tip.img}}" wx:if="{{tip.img != ''}}" mode="center"/> -->
+<van-dialog id="van-dialog" />
+<view class="back">
+  <!-- 公告栏，如果公告包含图片则只显示图片，用户点击后显示公告详细内容 -->
+  <!-- <view class="tip" bindtap="ClickTip">
+    <image class="img1" wx:if="{{tip.img != '' && showtip === 0}}" src="{{tip.img}}" mode="aspectFit" />
+    <view class="textContent" wx:if="{{tip.img === '' || showtip === 1}}"
+      style="background: linear-gradient(to bottom right,#{{tip.color}},#{{tip.gradualChangeColor}});color:#{{tip.fontColor}};">
+      <scroll-view class="text1" scroll-y="true">{{tip.info}}</scroll-view>
+      <text class="time">{{tip.date}}</text>
+    </view>
+  </view> -->
+  <!-- 预览图片的遮罩层 -->
+  <!-- <van-overlay show="{{ show }}" bind:click="onClickHide">
+    <view class="wrapper">
+      <image class="imgView" src="{{tip.img}}" />
+    </view>
+  </van-overlay> -->
+  <scroll-view class="tip_container">
+    <view class="tip"
+      style="background: linear-gradient(to bottom right,#{{tip.color}},#{{tip.gradualChangeColor}});color:#{{tip.fontColor}};">
+      <image mode="widthFix" class="img1" src="{{tip.img}}" catchtap="ClickImg" />
+      <view class="text1">{{tip.info}}</view>
+      <!-- <text class="time">{{tip.date}}</text> -->
+    </view>
+  </scroll-view>
+
+  <!-- 页面跳转按钮区域 -->
+  <view class="btnArea" style="color:{{fontColor}};height:{{navigateHeight * navigateList.length + 3}}rpx;">
+    <view class="navigateBtn" wx:for="{{navigateList}}" bindtap="{{item.bindEvent}}" data-item="{{item}}"
+      style="height:{{navigateHeight + 1}}rpx;">
+      <view class="btn" id="{{'id' + item.id}}">
+        <view class="imgArea1" wx:if="{{item.img != ''}}"
+          style="width:{{navigateHeight}}rpx;heigth:{{navigateHeight}};">
+          <image class="img2" src="{{item.img}}" />
+        </view>
+        <text class="navigateName"
+          style="width:{{item.img === '' ? 600 : (600 - navigateHeight)}}rpx;">{{item.name}}</text>
+        <view class="imgArea2" style="width:{{navigateHeight}}rpx;heigth:{{navigateHeight}};">
+          <van-icon name="arrow" />
+        </view>
+      </view>
+      <view class="line" wx:if="{{item.id != navigateList.length}}" />
+    </view>
+  </view>
+
+  <!-- 底部文字区域 -->
+  <view class="bottomText">Copyright<view style="color:#9dbdc6;" bindtap="author">{{'@Naomi'}}</view>.All Rights
+    Reserved.</view>
 </view>
