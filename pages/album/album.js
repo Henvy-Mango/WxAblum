@@ -57,16 +57,15 @@ Page({
     // 当前操作的图片
     imageInAction: '',
 
-    preview: {
-      // 图片预览模式
-      previewMode: false,
+    // 图片预览模式
+    previewMode: false,
 
-      // 当前预览索引
-      previewIndex: 0,
+    // 当前预览索引
+    previewIndex: 0,
 
-      // 切换动画的时间
-      slideDuration: 400,
-    }
+    // 切换动画的时间
+    slideDuration: 400,
+
   },
 
   onLoad() {
@@ -212,32 +211,32 @@ Page({
     var {
       albumList,
       Actions,
-      preview,
-      showActionSheet
+      previewIndex,
+      showActionSheet,
+      slideDuration
     } = this.data
 
     if (showActionSheet) {
       return;
     }
     let imageUrl = event.target.dataset.src;
-    let previewIndex = albumList.indexOf(imageUrl);
+    previewIndex = albumList.indexOf(imageUrl);
     Actions.shift()
-    preview.slideDuration = 0
+    slideDuration = 0
     this.setData({
-      preview,
+      slideDuration,
       Actions
     });
 
-    preview.previewMode = true
-    preview.previewIndex = previewIndex
     setTimeout(() => {
       this.setData({
-        preview
+        previewMode: true,
+        previewIndex
       });
       setTimeout(() => {
-        preview.slideDuration = 400
+        slideDuration = 400
         this.setData({
-          preview
+          slideDuration
         });
       }, 400);
     });
@@ -246,12 +245,8 @@ Page({
   // 退出预览模式
   leavePreviewMode() {
     var {
-      Actions,
-      preview
+      Actions
     } = this.data
-
-    preview.previewMode = false
-    preview.previewIndex = 0
 
     Actions.unshift({
       name: '返回顶部',
@@ -259,7 +254,8 @@ Page({
     })
 
     this.setData({
-      preview,
+      previewMode: false,
+      previewIndex: 0,
       Actions
     })
   },
