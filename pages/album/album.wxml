@@ -78,11 +78,11 @@
 </scroll-view>
 
 <!-- 预览模式 -->
-<swiper class="swiper-container" duration="{{preview.slideDuration}}" current="{{preview.previewIndex}}"
-	bindtap="leavePreviewMode" style="display: {{preview.previewMode ? 'block' : 'none'}};">
+<swiper class="swiper-container" duration="{{slideDuration}}" current="{{previewIndex}}"
+	bindtap="leavePreviewMode" style="display: {{previewMode ? 'block' : 'none'}};">
 	<block wx:for="{{albumList}}" wx:for-item="item" wx:key="item">
 		<swiper-item>
-			<image wx:if="{{preview.previewMode}}" data-src="{{item}}" bindlongpress="showActions" lazy-load="true"
+			<image wx:if="{{previewMode}}" data-src="{{item}}" bindlongpress="showActions" lazy-load="true"
 				src="{{item + '!weixin'}}" mode="aspectFit" />
 		</swiper-item>
 	</block>
