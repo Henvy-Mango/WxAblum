@@ -2,17 +2,6 @@ page {
   height: 100%;
 }
 
-.d {
-  color: #cacaca;
-}
-
-/* .backImg{
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  z-index: -1;
-  filter:blur(10rpx)
-} */
 .back {
   height: 100%;
   width: 100%;
@@ -22,54 +11,36 @@ page {
   padding-bottom: 20prx;
 }
 
-.tip_container{
+.tip_container {
   width: 640rpx;
   margin-top: 30rpx;
   box-shadow: 0rpx 0rpx 25rpx 3rpx rgb(214, 214, 214);
 }
+
 .tip {
   display: flex;
   flex-direction: column;
   align-items: center;
   border-radius: 20rpx;
+  color: #fff;
+  background: linear-gradient(to bottom right, #9dbdc6, #bfcad1);
 }
 
-.img1 {
-  margin-top: 30rpx;
+.tip_img {
+  margin-top: 10rpx;
   width: 90%;
   border-radius: 20rpx;
 }
-.imgView{
-  width: 100%;
-}
-.wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-}
 
-.textContent {
-  width: 100%;
-  height: 100rpx;
-  border-radius: 20rpx;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-}
-
-.text1 {
+.tip_msg {
   width: 100%;
   height: 140rpx;
   box-sizing: border-box;
   padding: 35rpx;
 }
 
-.time {
-  width: 100%;
-  height: 60rpx;
-  box-sizing: border-box;
-  padding: 0rpx 35rpx 0 250rpx;
+.tip_date {
+  margin-top: 10rpx;
 }
 
 .btnArea {
@@ -117,9 +88,10 @@ page {
   align-items: center;
   box-sizing: border-box;
   padding-left: 50rpx;
+  width: 600rpx;
 }
 
-.imgArea2 {
+.navigateArrow {
   display: flex;
   align-items: center;
   justify-items: center;
