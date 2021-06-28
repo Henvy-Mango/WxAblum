@@ -68,13 +68,13 @@ Page({
       file
     } = event.detail;
 
-    this.notifyMessage('primary', `图片检查中`, 2000)
-
     var {
       fileList = []
     } = this.data;
 
-    var tmpList = fileList.concat(file)
+    var tmpList = [...fileList, ...file].filter(item => item.size < 115242880)
+
+    this.notifyMessage('primary', `安全检查中`, 2000)
 
     this.setData({
       canvas: tmpList.map(item => {
@@ -88,9 +88,15 @@ Page({
     // forEach异步问题解决方案，使用map和Promise.all
     const checkTasks = tmpList.map(item => item.url)
       .map((filePath, index) => {
-        return this.getCanvasDetail(filePath, index)
-          .then(res => this.getCanvasImg(res))
-          .then(res => util.checkSafePic(res))
+        var extIndex = filePath.lastIndexOf('.');
+        var extName = extIndex === -1 ? '' : filePath.substr(extIndex);
+        if (/\.(jpg|png|gif|jpeg|pjp|pjpeg|jfif|xbm|tif|svgz|webp|ico|bmp|svg)$/.test(extName)) {
+          return this.getCanvasDetail(filePath, index)
+            .then(res => this.getCanvasImg(res))
+            .then(res => util.checkSafePic(res))
+        } else {
+          return Promise.resolve(true)
+        }
       })
 
     Promise.all(checkTasks).then(async (res) => {
@@ -151,8 +157,8 @@ Page({
   },
 
   overSizeImg(event) {
-    let index = event.detail.index
-    this.notifyMessage('warning', `第${index+1}张图片体积过大`, 1000)
+    var index = event.detail.index
+    this.notifyMessage('warning', `第${index+1}张体积过大`, 3000)
   },
 
   uploadList(event) {
@@ -197,7 +203,7 @@ Page({
           cos.postObject({
             Bucket: config.Bucket,
             Region: config.Region,
-            Key: toolBar.selectFolder == 0 ? '' : toolBar.folder[toolBar.selectFolder] + Key,
+            Key: toolBar.selectFolder == 0 ? Key : toolBar.folder[toolBar.selectFolder] + Key,
             FilePath: item.url
           }, (err, data) => {
             if (data.statusCode == 200) {
@@ -222,7 +228,7 @@ Page({
           message: "上传成功，清空后重新上传",
           flag: true
         })
-        this.notifyMessage('success', `图片上传成功`)
+        this.notifyMessage('success', `上传成功`)
       })
   },
 

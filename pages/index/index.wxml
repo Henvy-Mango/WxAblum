@@ -1,5 +1,6 @@
 <van-dialog id="van-dialog" />
 <view class="back">
+  <!-- 公告 -->
   <scroll-view class="tip_container">
     <view class="tip">
       <text class="tip_date">{{tip.date}}</text>
