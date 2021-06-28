@@ -72,7 +72,7 @@ Page({
       fileList = []
     } = this.data;
 
-    var tmpList = [...fileList, ...file].filter(item => item.size < 115242880)
+    var tmpList = [...fileList, ...file].filter(item => item.size < 20971520)
 
     this.notifyMessage('primary', `安全检查中`, 2000)
 
