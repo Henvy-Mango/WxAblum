@@ -22,13 +22,10 @@ Page({
     that.getTip()
   },
 
-  // 开启图片预览，显示遮罩层
+  // 开启图片预览
   ClickImg: function (e) {
-    var that = this
-    var imgList = []
-    imgList.push(that.data.tip.img)
     wx.previewImage({
-      urls: imgList,
+      urls: [this.data.tip.img],
     })
   },
 
@@ -51,7 +48,7 @@ Page({
       if (album.enable) {
         navigationList.push({
           id: navigationList.length + 1,
-          name: album.bindName,
+          name: album.bindName != "" ? album.bindName : '云相册',
           bindEvent: album.bindEvent != "" ? album.bindEvent : 'goToAlbum'
         })
       }
@@ -102,11 +99,8 @@ Page({
     that.touchAminate(e.currentTarget.dataset.item.id)
     setTimeout(function () {
       // 上传视频
-      Dialog.alert({
-        title: '标题',
-        message: '弹窗内容'
-      }).then(() => {
-        // on close
+      wx.navigateTo({
+        url: '../album/uploader/uploader'
       });
     }, 50)
   },
@@ -127,8 +121,8 @@ Page({
     setTimeout(function () {
       // 弹窗
       Dialog.alert({
-        title: '标题',
-        message: '弹窗内容'
+        title: '作者信息',
+        message: '感谢使用，我是Naomi'
       }).then(() => {
         // on close
       });
