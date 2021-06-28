@@ -7,7 +7,7 @@
 
 <view class="uploadArea">
   <!-- 图片上传器 -->
-  <van-uploader file-list="{{fileList}}" preview-size="225rpx" multiple="ture" max-count="9" max-size="5242880"
+  <van-uploader file-list="{{fileList}}" preview-size="225rpx" multiple="ture" max-count="9" max-size="20971520"
     accept="media" image-fit="aspectFit" use-before-read bind:before-read="beforeRead" bind:after-read="afterRead"
     bind:delete="deleteImg" bind:oversize="overSizeImg" upload-text="选择图片" />
 </view>

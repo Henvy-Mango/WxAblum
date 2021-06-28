@@ -121,8 +121,8 @@ Page({
     setTimeout(function () {
       // 弹窗
       Dialog.alert({
-        title: '作者信息',
-        message: '感谢使用，我是Naomi'
+        title: 'Naomi在这',
+        message: 'CDN流量只有5GB，\n请不要当网盘使用qwq'
       }).then(() => {
         // on close
       });
