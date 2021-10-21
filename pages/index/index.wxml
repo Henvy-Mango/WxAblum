@@ -11,7 +11,7 @@
 
   <!-- 页面跳转按钮区域 -->
   <view class="btnArea" style="color:#515151;height:{{navigateHeight * navigationList.length + 3}}rpx;">
-    <view class="navigateBtn" wx:for="{{navigationList}}" bindtap="{{item.bindEvent}}" data-item="{{item}}"
+    <view class="navigateBtn" wx:for="{{navigationList}}" wx:key="id" bindtap="{{item.bindEvent}}" data-item="{{item}}"
       style="height:{{navigateHeight + 1}}rpx;">
       <!-- 按钮 -->
       <view class="btn" id="{{'id' + item.id}}">

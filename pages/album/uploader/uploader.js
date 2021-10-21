@@ -252,7 +252,7 @@ Page({
           var ratio = 2;
           var canvasWidth = res.width //图片原始长宽
           var canvasHeight = res.height
-          while (canvasWidth > 120 || canvasHeight > 120) { // 保证宽高在400以内
+          while (canvasWidth > 100 || canvasHeight > 100) { // 保证宽高在400以内
             canvasWidth = Math.trunc(res.width / ratio)
             canvasHeight = Math.trunc(res.height / ratio)
             ratio++;
@@ -318,17 +318,12 @@ Page({
     const tempFilePath = await wx.canvasToTempFilePath({
       canvas: canvas,
       quality: 0.5,
+      fileType: "jpg",
       width: canvas.width,
       height: canvas.height,
       destWidth: canvas.width,
       destHeight: canvas.height,
-      fileType: "jpg",
-    }, that).then(res => wx.compressImage({
-      src: res.tempFilePath,
-      quality: 50
-    })).then((res) => {
-      return res.tempFilePath
-    })
+    }).then((res) => res.tempFilePath)
 
     return tempFilePath
   },
