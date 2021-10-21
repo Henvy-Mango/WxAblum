@@ -16,6 +16,6 @@
   "author": "Naomi",
   "license": "ISC",
   "dependencies": {
-    "@vant/weapp": "^1.6.8"
+    "@vant/weapp": "^1.9.1"
   }
 }
