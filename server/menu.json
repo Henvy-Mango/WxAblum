@@ -1,0 +1,11 @@
+{
+  "announcement": {
+    "message": "",
+    "photoUrl": ""
+  },
+  "album": {
+    "enable": true,
+    "bindName": "",
+    "bindEvent": ""
+  }
+}
