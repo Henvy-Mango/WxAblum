@@ -6,7 +6,6 @@
     "van-loading": "@vant/weapp/loading/index",
     "van-nav-bar": "@vant/weapp/nav-bar/index",
     "van-dialog": "@vant/weapp/dialog/index",
-    "van-picker": "@vant/weapp/picker/index",
     "van-notify": "@vant/weapp/notify/index",
     "van-image": "@vant/weapp/image/index",
     "van-icon": "@vant/weapp/icon/index"
