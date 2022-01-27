@@ -1,7 +1,12 @@
-const config = require('../../../config');
-const util = require('../../../lib/util');
-const app = getApp();
-const cos = app.globalData.cos;
+import {
+  getRandFileName
+} from "../../../lib/util";
+
+import {
+  checkSafePic,
+  uploadPic,
+  getDir
+} from "../../../lib/api"
 
 import Notify from '../../../miniprogram_npm/@vant/weapp/notify/notify';
 
@@ -34,19 +39,11 @@ Page({
       toolBar
     } = this.data
 
-    cos.getBucket({
-      Bucket: config.Bucket,
-      Region: config.Region,
-      Prefix: "",
-      Delimiter: "/",
-    }, (err, data) => {
-      if (data) {
-        let list = data.CommonPrefixes.map(item => item.Prefix).filter(item => /^(?!.*CDN).*$/.test(item))
-        toolBar.folder = ['/'].concat(list)
-        that.setData({
-          toolBar
-        })
-      }
+    getDir(/^(?!.*CDN).*$/).then((res) => {
+      toolBar.folder = ['/'].concat(res)
+      that.setData({
+        toolBar
+      })
     })
   },
 
@@ -93,7 +90,7 @@ Page({
         if (/\.(jpg|png|gif|jpeg|pjp|pjpeg|jfif|xbm|tif|svgz|webp|ico|bmp|svg)$/.test(extName)) {
           return this.getCanvasDetail(filePath, index)
             .then(res => this.getCanvasImg(res))
-            .then(res => util.checkSafePic(res))
+            .then(res => checkSafePic(res))
         } else {
           return Promise.resolve(true)
         }
@@ -198,26 +195,19 @@ Page({
         this.setData({
           fileList: arr
         })
-        var Key = util.getRandFileName(item.url);
-        return new Promise((resolve, reject) => {
-          cos.postObject({
-            Bucket: config.Bucket,
-            Region: config.Region,
-            Key: toolBar.selectFolder == 0 ? Key : toolBar.folder[toolBar.selectFolder] + Key,
-            FilePath: item.url
-          }, (err, data) => {
-            if (data.statusCode == 200) {
-              arr[index].status = 'done'
-            } else {
-              arr[index].status = 'failed'
-              arr[index].message = '上传失败'
-            }
-            this.setData({
-              fileList: arr
-            })
-            resolve(data)
+        var Key = toolBar.selectFolder == 0 ? getRandFileName(item.url) : toolBar.folder[toolBar.selectFolder] + getRandFileName(item.url);
+        return uploadPic(Key, item.url).then((res) => {
+          if (res.statusCode == 200) {
+            arr[index].status = 'done'
+          } else {
+            arr[index].status = 'failed'
+            arr[index].message = '上传失败'
+          }
+          this.setData({
+            fileList: arr
           })
-        });
+          return res;
+        })
       })
 
     Promise.all(uploadTasks)

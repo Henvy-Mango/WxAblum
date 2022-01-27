@@ -1,7 +1,21 @@
-const config = require('../../config');
-const util = require('../../lib/util');
-const app = getApp();
-const cos = app.globalData.cos;
+import {
+  Bucket,
+  Region,
+  Prefix,
+  Delimiter
+} from "../../config";
+
+import {
+  qSort,
+  listToMatrix,
+  camSafeUrlEncode
+} from "../../lib/util"
+
+import {
+  getDir,
+  getBucket,
+  deletePic
+} from "../../lib/api"
 
 import Notify from '../../miniprogram_npm/@vant/weapp/notify/notify';
 import Dialog from '../../miniprogram_npm/@vant/weapp/dialog/dialog';
@@ -103,7 +117,7 @@ Page({
       }
       list = list.reverse();
       that.setData({
-        'albumList': list
+        albumList: list
       });
       that.renderAlbumList();
     }, marker);
@@ -117,19 +131,11 @@ Page({
       toolBar
     } = this.data
 
-    cos.getBucket({
-      Bucket: config.Bucket,
-      Region: config.Region,
-      Prefix: "",
-      Delimiter: "/",
-    }, (err, data) => {
-      if (data) {
-        let list = data.CommonPrefixes.map(item => item.Prefix).filter(item => /^(?!.*CDN).*$/.test(item))
-        toolBar.folder = ['/'].concat(list)
-        that.setData({
-          toolBar
-        })
-      }
+    getDir(/^(?!.*CDN).*$/).then((res) => {
+      toolBar.folder = ['/'].concat(res)
+      that.setData({
+        toolBar
+      })
     })
   },
 
@@ -147,35 +153,29 @@ Page({
     })
     var prefix = toolBar.folder[toolBar.selectFolder];
     if (prefix == '/')
-      prefix = config.Prefix
-    var delimiter = toolBar.deeper ? config.Delimiter : '/';
+      prefix = Prefix
+    var delimiter = toolBar.deeper ? Delimiter : '/';
 
-    cos.getBucket({
-      Bucket: config.Bucket,
-      Region: config.Region,
-      Prefix: prefix,
-      Marker: markerArg,
-      Delimiter: delimiter,
-      MaxKeys: 100,
-    }, (err, data) => {
+    getBucket(prefix, markerArg, delimiter).then(data => {
       if (data) {
-        console.log(data)
         if (data.IsTruncated == "true") {
           marker = data.NextMarker
         } else {
           marker = 0
         }
+
         var list =
-          util.qSort((data && data.Contents || []).filter(item => /\.(jpg|png|gif|jpeg|pjp|pjpeg|jfif|xbm|tif|svgz|webp|ico|bmp|svg)$/.test(item.Key) && /^(?!.*CDN).*$/.test(item.Key)))
-          .map(item => 'https://' + config.Bucket + '.cos.' + config.Region + '.myqcloud.com/' + util.camSafeUrlEncode(item.Key).replace(/%2F/g, '/'));
+          qSort((data && data.Contents || []).filter(item => /\.(jpg|png|gif|jpeg|pjp|pjpeg|jfif|xbm|tif|svgz|webp|ico|bmp|svg)$/.test(item.Key) && /^(?!.*CDN).*$/.test(item.Key)))
+          .map(item => 'https://' + Bucket + '.cos.' + Region + '.myqcloud.com/' + camSafeUrlEncode(item.Key).replace(/%2F/g, '/'));
         callback(list);
       } else {
         callback([]);
       }
       that.setData({
+        marker,
         loading: this.loadingMessage(false, "加载中")
       })
-    });
+    })
   },
 
   // 渲染相册列表
@@ -193,7 +193,7 @@ Page({
       type: 'add'
     });
 
-    layoutList = util.listToMatrix(imageList, layoutColumnSize, marker);
+    layoutList = listToMatrix(imageList, layoutColumnSize, marker);
 
     this.setData({
       layoutList,
@@ -365,11 +365,7 @@ Page({
     if (Key) {
       this.notifyMessage('primary', '正在删除图片', 1000)
 
-      cos.deleteObject({
-        Bucket: config.Bucket,
-        Region: config.Region,
-        Key: Key,
-      }, (err, data) => {
+      deletePic(Key).then(data => {
         if (data) {
           console.log(data)
           let index = albumList.indexOf(imageInAction);
@@ -384,7 +380,7 @@ Page({
         } else {
           this.notifyMessage('fail', '图片删除失败')
         }
-      });
+      })
     }
   },
 
