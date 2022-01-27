@@ -1,11 +1,4 @@
 import {
-  Bucket,
-  Region,
-  Prefix,
-  Delimiter,
-} from '../../config';
-
-import {
   qSort,
   listToMatrix,
   camSafeUrlEncode,
@@ -16,6 +9,15 @@ import {
   getBucket,
   deletePic,
 } from '../../lib/api';
+
+import config from '../config';
+
+const {
+  Bucket,
+  Region,
+  Prefix,
+  Delimiter,
+} = config;
 
 import Notify from '../../miniprogram_npm/@vant/weapp/notify/notify';
 import Dialog from '../../miniprogram_npm/@vant/weapp/dialog/dialog';
