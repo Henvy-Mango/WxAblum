@@ -1,6 +1,6 @@
 const cloud = require('wx-server-sdk');
 cloud.init();
-exports.main = async (event, context) => {
+exports.main = async (event) => {
   console.log(event.txt);
   const {
     value,
