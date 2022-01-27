@@ -1,0 +1,6 @@
+server
+typings
+functions
+node_modules
+miniprogram_npm
+lib/cos-wx-sdk-v5.js

@@ -7,15 +7,23 @@
     "lib": "lib"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "eslint": "eslint ./ --ext .js --ext .wxml",
+    "eslint:fix": "eslint --fix ./ --ext .js --ext .wxml"
   },
   "repository": {
     "type": "git",
     "url": "https://git.naomi.pub/naomi/Album.git"
   },
   "author": "Naomi",
-  "license": "ISC",
+  "license": "MIT",
+  "private": true,
   "dependencies": {
     "@vant/weapp": "^1.10.2"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.16.5",
+    "eslint-plugin-wxml": "^0.6.1",
+    "@babel/core": "^7.16.12",
+    "eslint": "^8.7.0"
   }
 }
