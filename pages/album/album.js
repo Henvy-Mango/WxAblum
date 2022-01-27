@@ -10,7 +10,7 @@ import {
   deletePic,
 } from '../../lib/api';
 
-import config from '../config';
+import config from '../../config';
 
 const {
   Bucket,
