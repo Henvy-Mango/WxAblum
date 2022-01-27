@@ -4,14 +4,14 @@
   <scroll-view class="tip_container">
     <view class="tip">
       <text class="tip_date">{{tip.date}}</text>
-      <image mode="widthFix" class="tip_img" src="{{tip.img}}" catchtap="ClickImg" />
+      <image mode="widthFix" class="tip_img" src="{{tip.img}}" catch:tap="ClickImg" />
       <view class="tip_msg">{{tip.msg}}</view>
     </view>
   </scroll-view>
 
   <!-- 页面跳转按钮区域 -->
   <view class="btnArea" style="color:#515151;height:{{navigateHeight * navigationList.length + 3}}rpx;">
-    <view class="navigateBtn" wx:for="{{navigationList}}" wx:key="id" bindtap="{{item.bindEvent}}" data-item="{{item}}"
+    <view class="navigateBtn" wx:for="{{navigationList}}" wx:key="id" bind:tap="{{item.bindEvent}}" data-item="{{item}}"
       style="height:{{navigateHeight + 1}}rpx;">
       <!-- 按钮 -->
       <view class="btn" id="{{'id' + item.id}}">
@@ -26,6 +26,6 @@
   </view>
 
   <!-- 底部文字区域 -->
-  <view class="bottomText">Copyright<view style="color:#9dbdc6" bindtap="author">@Naomi</view>.All Rights
+  <view class="bottomText">Copyright<view style="color:#9dbdc6" bind:tap="author">@Naomi</view>.All Rights
     Reserved.</view>
 </view>

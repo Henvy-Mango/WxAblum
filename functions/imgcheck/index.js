@@ -6,22 +6,20 @@ exports.main = async (event, context) => {
     value,
   } = event;
   try {
-    let msgR = false;
     let imageR = false;
-    //检查 图片内容是否违规
+    // 检查图片内容是否违规
     if (value) {
       imageR = await cloud.openapi.security.imgSecCheck({
         media: {
           contentType: 'image/png',
-          value: Buffer.from(value)
-        }
-      })
+          value: Buffer.from(value),
+        },
+      });
     }
-    return {
-      imageR //图片检查返回值
-    };
+    // 图片检查返回值
+    return imageR
   } catch (err) {
     // 错误处理
-    return err
+    return err;
   }
-}
+};

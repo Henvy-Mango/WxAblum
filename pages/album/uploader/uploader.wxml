@@ -1,20 +1,17 @@
 <!-- 压缩图片用的画布 -->
-<canvas wx:for='{{canvas}}' wx:for-index="index" type="2d" id='canvas-{{index}}' wx:key="index"
-  style="width:{{item.canvasWidth}}px;height:{{item.canvasHeight}}px;position:absolute;top:-999999px;left:-999999px;"></canvas>
+<canvas wx:for="{{canvas}}" wx:for-index="index" type="2d" id="canvas-{{index}}" wx:key="index" style="width:{{item.canvasWidth}}px;height:{{item.canvasHeight}}px;position:absolute;top:-999999px;left:-999999px;" />
 
 <!-- Toast消息框 -->
 <van-notify id="van-notify" />
 
 <view class="uploadArea">
   <!-- 图片上传器 -->
-  <van-uploader file-list="{{fileList}}" preview-size="225rpx" multiple="ture" max-count="9" max-size="20971520"
-    accept="media" image-fit="aspectFit" use-before-read bind:before-read="beforeRead" bind:after-read="afterRead"
-    bind:delete="deleteImg" bind:oversize="overSizeImg" upload-text="选择图片" />
+  <van-uploader file-list="{{fileList}}" preview-size="225rpx" multiple="ture" max-count="9" max-size="20971520" accept="media" image-fit="aspectFit" use-before-read bind:before-read="beforeRead" bind:after-read="afterRead" bind:delete="deleteImg" bind:oversize="overSizeImg" upload-text="选择图片" />
 </view>
 
 <!-- 选择上传文件夹 -->
 <view class="upload-tips">
-  <picker bindchange="bindPickerChange" value="{{toolBar.selectFolder}}" range="{{toolBar.folder}}">
+  <picker bind:change="bindPickerChange" value="{{toolBar.selectFolder}}" range="{{toolBar.folder}}">
     <view class="upload-folder">
       上传位置： {{toolBar.folder[toolBar.selectFolder]}}
     </view>
@@ -23,8 +20,7 @@
 
 <view class="uploadBtn">
   <!-- 上传按钮 -->
-  <van-button block type="primary" disabled="{{flag}}" loading="{{loading}}" loading-text="上传中…"
-    bind:click="uploadList">{{message}}
+  <van-button block type="primary" disabled="{{flag}}" loading="{{loading}}" loading-text="上传中…" bind:click="uploadList">{{message}}
   </van-button>
   <!-- 清空按钮 -->
   <van-button block type="danger" bind:click="refreshList" custom-style="margin-top:20rpx">清空
