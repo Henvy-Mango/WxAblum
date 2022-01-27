@@ -1,4 +1,7 @@
-const util = require("../../lib/util");
+import {
+  formatTime
+} from '../../lib/util'
+
 import Dialog from '../../miniprogram_npm/@vant/weapp/dialog/dialog';
 
 const {
@@ -43,7 +46,7 @@ Page({
       var tip = {
         img: announcement.photoUrl,
         msg: announcement.message,
-        date: util.formatTime(new Date(res.header["Last-Modified"])),
+        date: formatTime(new Date(res.header["Last-Modified"])),
       }
       if (album.enable) {
         navigationList.push({
