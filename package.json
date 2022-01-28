@@ -7,13 +7,21 @@
     "lib": "lib"
   },
   "scripts": {
-    "eslint": "eslint ./ --ext .js --ext .wxml",
-    "eslint:fix": "eslint --fix ./ --ext .js --ext .wxml",
-    "prettier": "prettier --write './**/*.{js,wxml,wxss,json}'"
+    "eslint": "eslint --ext .js --ext .wxml",
+    "eslint:fix": "eslint --fix --ext .js --ext .wxml",
+    "prettier": "prettier -w './**/*.{js,wxml,wxss,json}'",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "*.{js,wxml}": [
+      "eslint --fix",
+      "prettier -w './**/*.{js,wxml}'"
+    ],
+    "*.{wxss,json}": "prettier -w './**/*.{wxss,json}'"
   },
   "repository": {
     "type": "git",
-    "url": "https://git.naomi.pub/naomi/Album.git"
+    "url": "https://github.com/Henvy-Mango/WxAblum.git"
   },
   "author": "Naomi",
   "license": "MIT",
@@ -26,6 +34,8 @@
     "@babel/eslint-parser": "^7.16.5",
     "eslint": "^8.7.0",
     "eslint-plugin-wxml": "^0.6.1",
+    "husky": "^7.0.4",
+    "lint-staged": "^12.3.2",
     "prettier": "^2.5.1"
   }
 }
