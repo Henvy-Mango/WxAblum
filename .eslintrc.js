@@ -1,6 +1,7 @@
 module.exports = {
   root: true,
-  overrides: [{
+  overrides: [
+    {
       files: ['*.wxml'],
       rules: {
         'wxml/colon-style-event-binding': 'error',
@@ -27,9 +28,7 @@ module.exports = {
         node: true,
         commonjs: true,
       },
-      extends: [
-        'eslint:recommended',
-      ],
+      extends: ['eslint:recommended'],
       parser: '@babel/eslint-parser',
       parserOptions: {
         requireConfigFile: false,
@@ -57,8 +56,8 @@ module.exports = {
       rules: {
         'no-tabs': 2,
         'no-extra-semi': 2,
-        'semi': [2, 'always'],
-        'quotes': [2, 'single'],
+        semi: [2, 'always'],
+        quotes: [2, 'single'],
         'comma-dangle': [1, 'always-multiline'],
       },
     },
