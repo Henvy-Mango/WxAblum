@@ -4,6 +4,7 @@ module.exports = {
     {
       files: ['*.wxml'],
       rules: {
+        'wxml/forbid-tags': ['error', { forbid: ['div', 'span', 'p'] }],
         'wxml/colon-style-event-binding': 'error',
         'wxml/report-wxml-syntax-error': 'error',
         'wxml/no-duplicate-attributes': 'error',

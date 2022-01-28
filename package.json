@@ -7,14 +7,14 @@
     "lib": "lib"
   },
   "scripts": {
-    "eslint": "eslint --ext .js --ext .wxml",
-    "eslint:fix": "eslint --fix --ext .js --ext .wxml",
+    "eslint": "eslint . --ext .js,.wxml",
+    "eslint:fix": "eslint . --fix --ext .js,.wxml .",
     "prettier": "prettier -w './**/*.{js,wxml,wxss,json}'",
     "prepare": "husky install"
   },
   "lint-staged": {
     "*.{js,wxml}": [
-      "eslint --fix",
+      "eslint . --fix --ext .js,.wxml",
       "prettier -w './**/*.{js,wxml}'"
     ],
     "*.{wxss,json}": "prettier -w './**/*.{wxss,json}'"
