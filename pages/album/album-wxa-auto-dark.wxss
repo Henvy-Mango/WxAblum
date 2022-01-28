@@ -8,27 +8,27 @@
  */
 
 @media (prefers-color-scheme: dark) {
-    page {
-        background-color: rgb(99, 110, 116);
-    }
+  page {
+    background-color: rgb(99, 110, 116);
+  }
 
-    .top-button {
-        background: #b8c4ca;
-    }
+  .top-button {
+    background: #b8c4ca;
+  }
 
-    .upload-tips {
-        color: rgb(0, 0, 0);
-    }
+  .upload-tips {
+    color: rgb(0, 0, 0);
+  }
 
-    .upload-add {
-       background: rgb(141, 155, 163);
-    }
+  .upload-add {
+    background: rgb(141, 155, 163);
+  }
 
-    .upload-add text {
-        color: rgb(0, 0, 0);
-    }
+  .upload-add text {
+    color: rgb(0, 0, 0);
+  }
 
-    .tips {
-        color: rgb(0, 0, 0);
-    }
+  .tips {
+    color: rgb(0, 0, 0);
+  }
 }

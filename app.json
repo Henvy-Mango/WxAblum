@@ -1,11 +1,7 @@
 {
   "cloud": true,
   "darkmode": true,
-  "pages": [
-    "pages/index/index",
-    "pages/album/album",
-    "pages/album/uploader/uploader"
-  ],
+  "pages": ["pages/index/index", "pages/album/album", "pages/album/uploader/uploader"],
   "window": {
     "navigationBarBackgroundColor": "#9dbdc6",
     "navigationBarTextStyle": "black",

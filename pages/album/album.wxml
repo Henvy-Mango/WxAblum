@@ -1,5 +1,11 @@
 <!-- 选项菜单 -->
-<van-action-sheet show="{{showActionSheet}}" actions="{{Actions}}" bind:close="hideActionSheet" bind:select="selectActionSheet" cancel-text="返回" bind:cancel="hideActionSheet" />
+<van-action-sheet
+  show="{{showActionSheet}}"
+  actions="{{Actions}}"
+  bind:close="hideActionSheet"
+  bind:select="selectActionSheet"
+  cancel-text="返回"
+  bind:cancel="hideActionSheet" />
 
 <!-- Dialog对话框 -->
 <van-dialog id="van-dialog" />
@@ -8,77 +14,108 @@
 <van-notify id="van-notify" />
 
 <!-- 导航栏 -->
-<van-nav-bar wx:if="{{!previewMode}}" title="云相册" left-text="返回" left-arrow bind:click-left="goBackPage" placeholder="true" />
+<van-nav-bar
+  wx:if="{{!previewMode}}"
+  title="云相册"
+  left-text="返回"
+  left-arrow
+  bind:click-left="goBackPage"
+  placeholder="true" />
 
 <!-- 加载框 -->
 <view wx:if="{{loading.enable}}" class="loading">
-	<van-loading size="24px">{{loading.text}}...{{loading.progress!=null ? loading.progress + '%' : ''}}</van-loading>
+  <van-loading size="24px">{{loading.text}}...{{loading.progress!=null ? loading.progress + '%' : ''}}</van-loading>
 </view>
 
 <!-- 图片列表容器 -->
 <scroll-view class="container" scroll-y="true" style="display: {{!preview.previewMode ? 'block' : 'none'}};">
+  <!-- 工具类ToolBar -->
+  <view class="top-button">
+    <van-checkbox
+      class="upload-tips"
+      style="position: absolute; right: 15rpx; top: 18rpx"
+      shape="square"
+      icon-size="45rpx"
+      bind:change="checkboxChange"
+      value="{{toolBar.deeper}}"
+      >深度遍历</van-checkbox
+    >
+    <picker bind:change="bindPickerChange" value="{{toolBar.selectFolder}}" range="{{toolBar.folder}}">
+      <view class="upload-tips" style="margin-left: 32rpx">
+        当前文件夹： {{toolBar.folder[toolBar.selectFolder]}}
+      </view>
+    </picker>
+  </view>
 
-	<!-- 工具类ToolBar -->
-	<view class="top-button">
-		<van-checkbox class="upload-tips" style="position:absolute;right:15rpx;top:18rpx;" shape="square" icon-size="45rpx" bind:change="checkboxChange" value="{{toolBar.deeper}}">深度遍历</van-checkbox>
-		<picker bind:change="bindPickerChange" value="{{toolBar.selectFolder}}" range="{{toolBar.folder}}">
-			<view class="upload-tips" style="margin-left:32rpx;">
-				当前文件夹： {{toolBar.folder[toolBar.selectFolder]}}
-			</view>
-		</picker>
-	</view>
+  <!-- 相册列表 -->
+  <view class="album-container">
+    <view class="item-group" wx:for="{{layoutList}}" wx:for-item="group" wx:for-index="rowIndex" wx:key="group">
+      <block wx:for="{{group}}" wx:for-item="item" wx:for-index="cellIndex" wx:key="item">
+        <!-- 上传预留位 -->
+        <block wx:if="{{item.type === 'add'}}">
+          <view class="upload-add" bind:tap="goToUpload">
+            <a class="tips">点击或长按图片</a>
+            <van-icon name="photograph" size="120rpx" style="position: absolute; top: 57rpx; left: 63rpx" />
+            <text>上传图片</text>
+          </view>
+        </block>
 
-	<!-- 相册列表 -->
-	<view class="album-container">
-		<view class="item-group" wx:for="{{layoutList}}" wx:for-item="group" wx:for-index="rowIndex" wx:key="group">
-			<block wx:for="{{group}}" wx:for-item="item" wx:for-index="cellIndex" wx:key="item">
+        <!-- 相册图片预留位 -->
+        <block wx:elif="{{item.type == undefined && item!=0}}">
+          <van-image
+            width="244rpx"
+            height="242rpx"
+            lazy-load
+            fit="cover"
+            class="album-item"
+            bind:tap="enterPreviewMode"
+            bind:longpress="showActions"
+            src="{{item+'!preview'}}"
+            data-src="{{item}}" />
+        </block>
 
-				<!-- 上传预留位 -->
-				<block wx:if="{{item.type === 'add'}}">
-					<view class="upload-add" bind:tap="goToUpload">
-						<a class="tips">点击或长按图片</a>
-						<van-icon name="photograph" size="120rpx" style="position: absolute; top: 57rpx; left: 63rpx" />
-						<text>上传图片</text>
-					</view>
-				</block>
+        <!-- 下一页预留位 -->
+        <block wx:elif="{{item.type === 'next'}}">
+          <view class="upload-add" bind:tap="nextPage">
+            <van-icon name="more" size="110rpx" style="position: absolute; top: 60rpx; left: 66rpx" />
+            <text>下一页</text>
+          </view>
+        </block>
 
-				<!-- 相册图片预留位 -->
-				<block wx:elif="{{item.type == undefined && item!=0}}">
-					<van-image width="244rpx" height="242rpx" lazy-load fit="cover" class="album-item" bind:tap="enterPreviewMode" bind:longpress="showActions" src="{{item+'!preview'}}" data-src="{{item}}" />
-				</block>
+        <!-- 末尾预留位 -->
+        <block wx:elif="{{item.type==='done'}}">
+          <!-- 开启管理员模式 -->
+          <view class="upload-add">
+            <van-icon name="smile" size="110rpx" style="position: absolute; top: 60rpx; left: 66rpx" />
+            <text style="font-size: 36rpx" bind:longpress="rightOfDelete">没有图片了</text>
+          </view>
+        </block>
 
-				<!-- 下一页预留位 -->
-				<block wx:elif="{{item.type === 'next'}}">
-					<view class="upload-add" bind:tap="nextPage">
-						<van-icon name="more" size="110rpx" style="position: absolute; top: 60rpx; left: 66rpx" />
-						<text>下一页</text>
-					</view>
-				</block>
-
-				<!-- 末尾预留位 -->
-				<block wx:elif="{{item.type==='done'}}">
-					<!-- 开启管理员模式 -->
-					<view class="upload-add">
-						<van-icon name="smile" size="110rpx" style="position: absolute; top: 60rpx; left: 66rpx" />
-						<text style="font-size:36rpx;" bind:longpress="rightOfDelete">没有图片了</text>
-					</view>
-				</block>
-
-				<!-- 无图透明 -->
-				<block wx:else>
-					<view class="album-item empty" />
-				</block>
-
-			</block>
-		</view>
-	</view>
+        <!-- 无图透明 -->
+        <block wx:else>
+          <view class="album-item empty" />
+        </block>
+      </block>
+    </view>
+  </view>
 </scroll-view>
 
 <!-- 预览模式 -->
-<swiper class="swiper-container" duration="{{slideDuration}}" current="{{previewIndex}}" bind:tap="leavePreviewMode" style="display: {{previewMode ? 'block' : 'none'}};">
-	<block wx:for="{{albumList}}" wx:for-item="item" wx:key="item">
-		<swiper-item>
-			<image wx:if="{{previewMode}}" data-src="{{item}}" bind:longpress="showActions" lazy-load="true" src="{{item + '!weixin'}}" mode="aspectFit" />
-		</swiper-item>
-	</block>
+<swiper
+  class="swiper-container"
+  duration="{{slideDuration}}"
+  current="{{previewIndex}}"
+  bind:tap="leavePreviewMode"
+  style="display: {{previewMode ? 'block' : 'none'}};">
+  <block wx:for="{{albumList}}" wx:for-item="item" wx:key="item">
+    <swiper-item>
+      <image
+        wx:if="{{previewMode}}"
+        data-src="{{item}}"
+        bind:longpress="showActions"
+        lazy-load="true"
+        src="{{item + '!weixin'}}"
+        mode="aspectFit" />
+    </swiper-item>
+  </block>
 </swiper>
