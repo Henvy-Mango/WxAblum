@@ -1,11 +1,12 @@
 <van-dialog id="van-dialog" />
+
 <view class="back">
   <!-- 公告 -->
-  <scroll-view class="tip_container">
+  <scroll-view class="tip-container">
     <view class="tip">
-      <text class="tip_date">{{tip.date}}</text>
-      <image mode="widthFix" class="tip_img" src="{{tip.img}}" catch:tap="ClickImg" />
-      <view class="tip_msg">{{tip.msg}}</view>
+      <text class="tip-date">{{tip.date}}</text>
+      <image mode="widthFix" class="tip-img" src="{{tip.img}}" catch:tap="ClickImg" />
+      <view class="tip-msg">{{tip.msg}}</view>
     </view>
   </scroll-view>
 
