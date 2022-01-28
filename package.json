@@ -21,9 +21,10 @@
     "@vant/weapp": "^1.10.2"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.16.5",
-    "eslint-plugin-wxml": "^0.6.1",
     "@babel/core": "^7.16.12",
-    "eslint": "^8.7.0"
+    "@babel/eslint-parser": "^7.16.5",
+    "eslint": "^8.7.0",
+    "eslint-plugin-wxml": "^0.6.1",
+    "prettier": "^2.5.1"
   }
 }
