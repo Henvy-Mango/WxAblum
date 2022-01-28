@@ -1,6 +1,6 @@
-# 服务器Server配置
+# 服务器 Server 配置
 
-server文件夹部署到Web服务器上
+server 文件夹部署到 Web 服务器上
 
 > sts.php
 
@@ -13,13 +13,13 @@ server文件夹部署到Web服务器上
 ```json
 {
   "announcement": {
-    "message": "这里是公告。",	// 公告消息
-    "photoUrl": "https://localhost/picture.jpg"	// 公告图片链接
+    "message": "这里是公告。", // 公告消息
+    "photoUrl": "https://localhost/picture.jpg" // 公告图片链接
   },
   "album": {
-    "enable": true,	// 云相册按钮开关
-    "bindName": "",	// 云相册按钮名称
-    "bindEvent": ""	// 云相册按钮绑定事件
+    "enable": true, // 云相册按钮开关
+    "bindName": "", // 云相册按钮名称
+    "bindEvent": "" // 云相册按钮绑定事件
   }
 }
 ```

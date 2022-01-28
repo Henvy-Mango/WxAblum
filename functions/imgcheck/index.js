@@ -2,9 +2,7 @@ const cloud = require('wx-server-sdk');
 cloud.init();
 exports.main = async (event) => {
   console.log(event.txt);
-  const {
-    value,
-  } = event;
+  const { value } = event;
   try {
     let imageR = false;
     // 检查图片内容是否违规
@@ -17,7 +15,7 @@ exports.main = async (event) => {
       });
     }
     // 图片检查返回值
-    return imageR
+    return imageR;
   } catch (err) {
     // 错误处理
     return err;

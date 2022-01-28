@@ -1,23 +1,10 @@
-import {
-  qSort,
-  listToMatrix,
-  camSafeUrlEncode,
-} from '../../lib/util';
+import { qSort, listToMatrix, camSafeUrlEncode } from '../../lib/util';
 
-import {
-  getDir,
-  getBucket,
-  deletePic,
-} from '../../lib/api';
+import { getDir, getBucket, deletePic } from '../../lib/api';
 
 import config from '../../config';
 
-const {
-  Bucket,
-  Region,
-  Prefix,
-  Delimiter,
-} = config;
+const { Bucket, Region, Prefix, Delimiter } = config;
 
 import Notify from '../../miniprogram_npm/@vant/weapp/notify/notify';
 import Dialog from '../../miniprogram_npm/@vant/weapp/dialog/dialog';
@@ -56,7 +43,8 @@ Page({
     showActionSheet: false,
 
     // 动作命令列表
-    Actions: [{
+    Actions: [
+      {
         name: '返回顶部',
         value: 1,
       },
@@ -81,7 +69,6 @@ Page({
 
     // 切换动画的时间
     slideDuration: 400,
-
   },
 
   onLoad() {
@@ -129,9 +116,7 @@ Page({
   getAlbumDir() {
     let that = this;
 
-    var {
-      toolBar,
-    } = this.data;
+    var { toolBar } = this.data;
 
     getDir(/^(?!.*CDN).*$/).then((res) => {
       toolBar.folder = ['/'].concat(res);
@@ -145,20 +130,16 @@ Page({
   getAlbumList(callback, markerArg = '') {
     let that = this;
 
-    var {
-      toolBar,
-      marker,
-    } = this.data;
+    var { toolBar, marker } = this.data;
 
     this.setData({
       loading: this.loadingMessage(true, '加载中'),
     });
     var prefix = toolBar.folder[toolBar.selectFolder];
-    if (prefix == '/')
-      prefix = Prefix;
+    if (prefix == '/') prefix = Prefix;
     var delimiter = toolBar.deeper ? Delimiter : '/';
 
-    getBucket(prefix, markerArg, delimiter).then(data => {
+    getBucket(prefix, markerArg, delimiter).then((data) => {
       if (data) {
         if (data.IsTruncated == 'true') {
           marker = data.NextMarker;
@@ -166,9 +147,16 @@ Page({
           marker = 0;
         }
 
-        var list =
-          qSort((data && data.Contents || []).filter(item => /\.(jpg|png|gif|jpeg|pjp|pjpeg|jfif|xbm|tif|svgz|webp|ico|bmp|svg)$/.test(item.Key) && /^(?!.*CDN).*$/.test(item.Key)))
-          .map(item => 'https://' + Bucket + '.cos.' + Region + '.myqcloud.com/' + camSafeUrlEncode(item.Key).replace(/%2F/g, '/'));
+        var list = qSort(
+          ((data && data.Contents) || []).filter(
+            (item) =>
+              /\.(jpg|png|gif|jpeg|pjp|pjpeg|jfif|xbm|tif|svgz|webp|ico|bmp|svg)$/.test(item.Key) &&
+              /^(?!.*CDN).*$/.test(item.Key)
+          )
+        ).map(
+          (item) =>
+            'https://' + Bucket + '.cos.' + Region + '.myqcloud.com/' + camSafeUrlEncode(item.Key).replace(/%2F/g, '/')
+        );
         callback(list);
       } else {
         callback([]);
@@ -182,11 +170,7 @@ Page({
 
   // 渲染相册列表
   renderAlbumList() {
-    var {
-      albumList,
-      layoutColumnSize,
-      marker,
-    } = this.data;
+    var { albumList, layoutColumnSize, marker } = this.data;
 
     let layoutList = [];
     var imageList = [].concat(albumList);
@@ -210,13 +194,7 @@ Page({
 
   // 进入预览模式
   enterPreviewMode(event) {
-    var {
-      albumList,
-      Actions,
-      previewIndex,
-      showActionSheet,
-      slideDuration,
-    } = this.data;
+    var { albumList, Actions, previewIndex, showActionSheet, slideDuration } = this.data;
 
     if (showActionSheet) {
       return;
@@ -246,9 +224,7 @@ Page({
 
   // 退出预览模式
   leavePreviewMode() {
-    var {
-      Actions,
-    } = this.data;
+    var { Actions } = this.data;
 
     Actions.unshift({
       name: '返回顶部',
@@ -282,8 +258,8 @@ Page({
     } else if (select == 4) {
       let url = this.data.imageInAction;
       Dialog.confirm({
-          title: '确定删除',
-        })
+        title: '确定删除',
+      })
         .then(() => {
           this.deleteImage(url);
         })
@@ -358,17 +334,15 @@ Page({
   deleteImage(imageInAction) {
     let that = this;
 
-    var {
-      albumList,
-    } = this.data;
+    var { albumList } = this.data;
 
     let imageUrl = decodeURIComponent(imageInAction);
     var m = imageUrl.match(/^https:\/\/([^#?]+)/);
-    var Key = m && m[1] || '';
+    var Key = (m && m[1]) || '';
     if (Key) {
       this.notifyMessage('primary', '正在删除图片', 1000);
 
-      deletePic(Key).then(data => {
+      deletePic(Key).then((data) => {
         if (data) {
           console.log(data);
           let index = albumList.indexOf(imageInAction);
@@ -389,9 +363,7 @@ Page({
 
   // 开启管理员模式
   rightOfDelete() {
-    var {
-      Actions,
-    } = this.data;
+    var { Actions } = this.data;
 
     if (Actions.length == 3) {
       console.log('开启管理员模式！');
@@ -410,9 +382,7 @@ Page({
 
   // 文件夹选择
   bindPickerChange(e) {
-    var {
-      toolBar,
-    } = this.data;
+    var { toolBar } = this.data;
     console.log('picker发送选择改变，当前文件夹为', toolBar.folder[e.detail.value]);
     toolBar.selectFolder = e.detail.value;
     this.setData({
@@ -423,9 +393,7 @@ Page({
 
   // 深度遍历开关
   checkboxChange(e) {
-    var {
-      toolBar,
-    } = this.data;
+    var { toolBar } = this.data;
     console.log('checkbox发送选择改变，当前深度遍历为', e.detail ? '开启' : '关闭');
     toolBar.deeper = e.detail;
     this.setData({
@@ -436,9 +404,7 @@ Page({
 
   // 下一页按钮
   nextPage() {
-    var {
-      marker,
-    } = this.data;
+    var { marker } = this.data;
     console.log(`marker值为${marker}`);
     this.render(marker);
   },
