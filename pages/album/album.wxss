@@ -112,4 +112,4 @@ action-sheet-item.warn {
   color: #888;
 }
 
-@import 'album-wxa-auto-dark.wxss'
+@import 'album-wxa-auto-dark.wxss';

@@ -8,11 +8,11 @@
  */
 
 @media (prefers-color-scheme: dark) {
-    page {
-        background-color: rgb(99, 110, 116);
-    }
+  page {
+    background-color: rgb(99, 110, 116);
+  }
 
-    .upload-folder {
-        color: rgb(0, 0, 0);
-    }
+  .upload-folder {
+    color: rgb(0, 0, 0);
+  }
 }

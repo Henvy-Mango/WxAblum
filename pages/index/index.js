@@ -1,22 +1,20 @@
-import {
-  formatTime,
-} from '../../lib/util';
+import { formatTime } from '../../lib/util';
 
 import Dialog from '../../miniprogram_npm/@vant/weapp/dialog/dialog';
 
-import {
-  getMenu,
-} from '../../lib/api';
+import { getMenu } from '../../lib/api';
 
 // 页面目前需要从服务端获取的数据：公告栏内容tip
 Page({
   data: {
     // 页面跳转按钮列表
-    navigationList: [{
-      id: 1,
-      name: '上传图片',
-      bindEvent: 'uploadImg',
-    }],
+    navigationList: [
+      {
+        id: 1,
+        name: '上传图片',
+        bindEvent: 'uploadImg',
+      },
+    ],
     navigateHeight: 100, // 单位:rpx
   },
 
@@ -36,13 +34,8 @@ Page({
   getTip: function () {
     var that = this;
     getMenu().then((res) => {
-      var {
-        navigationList,
-      } = this.data;
-      var {
-        album,
-        announcement,
-      } = res.data;
+      var { navigationList } = this.data;
+      var { album, announcement } = res.data;
       var tip = {
         img: announcement.photoUrl,
         msg: announcement.message,
@@ -65,23 +58,29 @@ Page({
   // 点击跳转按钮时执行的动画
   touchAminate(id) {
     var that = this;
-    that.animate('#id' + id, [{
-        opacity: 1.0,
-        backgroundColor: '#ffffff',
-      },
-      {
-        opacity: 0.8,
-        backgroundColor: '#cacaca',
-      },
-      {
-        opacity: 1.0,
-        backgroundColor: '#ffffff',
-      },
-    ], 50, function () {
-      that.clearAnimation('#id' + id, {
-        opacity: true,
-      });
-    });
+    that.animate(
+      '#id' + id,
+      [
+        {
+          opacity: 1.0,
+          backgroundColor: '#ffffff',
+        },
+        {
+          opacity: 0.8,
+          backgroundColor: '#cacaca',
+        },
+        {
+          opacity: 1.0,
+          backgroundColor: '#ffffff',
+        },
+      ],
+      50,
+      function () {
+        that.clearAnimation('#id' + id, {
+          opacity: true,
+        });
+      }
+    );
   },
 
   // 上传图片

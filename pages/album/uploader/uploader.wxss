@@ -26,4 +26,4 @@
   line-height: 80rpx;
 }
 
-@import 'uploader-wxa-auto-dark.wxss'
+@import 'uploader-wxa-auto-dark.wxss';
