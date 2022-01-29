@@ -19,7 +19,7 @@ Page({
   },
 
   onLoad: function () {
-    var that = this;
+    let that = this;
     that.getTip();
   },
 
@@ -32,11 +32,11 @@ Page({
 
   // 获取公告
   getTip: function () {
-    var that = this;
+    let that = this;
     getMenu().then((res) => {
-      var { navigationList } = this.data;
-      var { album, announcement } = res.data;
-      var tip = {
+      let { navigationList } = this.data;
+      let { album, announcement } = res.data;
+      let tip = {
         img: announcement.photoUrl,
         msg: announcement.message,
         date: formatTime(new Date(res.header['Last-Modified'])),
@@ -44,8 +44,8 @@ Page({
       if (album.enable) {
         navigationList.push({
           id: navigationList.length + 1,
-          name: album.bindName != '' ? album.bindName : '云相册',
-          bindEvent: album.bindEvent != '' ? album.bindEvent : 'goToAlbum',
+          name: album.bindName !== '' ? album.bindName : '云相册',
+          bindEvent: album.bindEvent !== '' ? album.bindEvent : 'goToAlbum',
         });
       }
       that.setData({
@@ -57,7 +57,7 @@ Page({
 
   // 点击跳转按钮时执行的动画
   touchAminate(id) {
-    var that = this;
+    let that = this;
     that.animate(
       '#id' + id,
       [
@@ -75,7 +75,7 @@ Page({
         },
       ],
       50,
-      function () {
+      () => {
         that.clearAnimation('#id' + id, {
           opacity: true,
         });
@@ -85,9 +85,9 @@ Page({
 
   // 上传图片
   uploadImg(e) {
-    var that = this;
+    let that = this;
     that.touchAminate(e.currentTarget.dataset.item.id);
-    setTimeout(function () {
+    setTimeout(() => {
       // 上传图片
       wx.navigateTo({
         url: '../album/uploader/uploader',
@@ -97,9 +97,9 @@ Page({
 
   // 上传视频
   uploadVedio(e) {
-    var that = this;
+    let that = this;
     that.touchAminate(e.currentTarget.dataset.item.id);
-    setTimeout(function () {
+    setTimeout(() => {
       // 上传视频
       wx.navigateTo({
         url: '../album/uploader/uploader',
@@ -109,9 +109,9 @@ Page({
 
   // 前往相册页
   goToAlbum(e) {
-    var that = this;
+    let that = this;
     that.touchAminate(e.currentTarget.dataset.item.id);
-    setTimeout(function () {
+    setTimeout(() => {
       wx.navigateTo({
         url: '../album/album',
       });
@@ -120,7 +120,7 @@ Page({
 
   // 查看作者
   author() {
-    setTimeout(function () {
+    setTimeout(() => {
       // 弹窗
       Dialog.alert({
         title: 'Naomi在这',

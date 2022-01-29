@@ -100,13 +100,14 @@ Page({
 
     let that = this;
     this.getAlbumList((list) => {
-      list = that.data.albumList.concat(list || {});
+      let tmp = list;
+      tmp = that.data.albumList.concat(list || {});
       if (!list.length) {
-        list = [];
+        tmp = [];
       }
-      list = list.reverse();
+      tmp = list.reverse();
       that.setData({
-        albumList: list,
+        albumList: tmp,
       });
       that.renderAlbumList();
     }, marker);
@@ -116,7 +117,7 @@ Page({
   getAlbumDir() {
     let that = this;
 
-    var { toolBar } = this.data;
+    let { toolBar } = this.data;
 
     getDir(/^(?!.*CDN).*$/).then((res) => {
       toolBar.folder = ['/'].concat(res);
@@ -130,24 +131,24 @@ Page({
   getAlbumList(callback, markerArg = '') {
     let that = this;
 
-    var { toolBar, marker } = this.data;
+    let { toolBar, marker } = this.data;
 
     this.setData({
       loading: this.loadingMessage(true, '加载中'),
     });
-    var prefix = toolBar.folder[toolBar.selectFolder];
-    if (prefix == '/') prefix = Prefix;
-    var delimiter = toolBar.deeper ? Delimiter : '/';
+    let prefix = toolBar.folder[toolBar.selectFolder];
+    if (prefix === '/') prefix = Prefix;
+    let delimiter = toolBar.deeper ? Delimiter : '/';
 
     getBucket(prefix, markerArg, delimiter).then((data) => {
       if (data) {
-        if (data.IsTruncated == 'true') {
+        if (data.IsTruncated === 'true') {
           marker = data.NextMarker;
         } else {
           marker = 0;
         }
 
-        var list = qSort(
+        let list = qSort(
           ((data && data.Contents) || []).filter(
             (item) =>
               /\.(jpg|png|gif|jpeg|pjp|pjpeg|jfif|xbm|tif|svgz|webp|ico|bmp|svg)$/.test(item.Key) &&
@@ -170,10 +171,10 @@ Page({
 
   // 渲染相册列表
   renderAlbumList() {
-    var { albumList, layoutColumnSize, marker } = this.data;
+    let { albumList, layoutColumnSize, marker } = this.data;
 
     let layoutList = [];
-    var imageList = [].concat(albumList);
+    let imageList = [].concat(albumList);
 
     imageList.unshift({
       type: 'add',
@@ -194,7 +195,7 @@ Page({
 
   // 进入预览模式
   enterPreviewMode(event) {
-    var { albumList, Actions, previewIndex, showActionSheet, slideDuration } = this.data;
+    let { albumList, Actions, previewIndex, showActionSheet, slideDuration } = this.data;
 
     if (showActionSheet) {
       return;
@@ -224,7 +225,7 @@ Page({
 
   // 退出预览模式
   leavePreviewMode() {
-    var { Actions } = this.data;
+    let { Actions } = this.data;
 
     Actions.unshift({
       name: '返回顶部',
@@ -249,13 +250,13 @@ Page({
   // 动作列表选择
   selectActionSheet(e) {
     let select = e.detail.value;
-    if (select == 1) {
+    if (select === 1) {
       this.goTop();
-    } else if (select == 2) {
+    } else if (select === 2) {
       this.copyLink();
-    } else if (select == 3) {
+    } else if (select === 3) {
       this.downloadImage();
-    } else if (select == 4) {
+    } else if (select === 4) {
       let url = this.data.imageInAction;
       Dialog.confirm({
         title: '确定删除',
@@ -334,14 +335,13 @@ Page({
   deleteImage(imageInAction) {
     let that = this;
 
-    var { albumList } = this.data;
+    let { albumList } = this.data;
 
     let imageUrl = decodeURIComponent(imageInAction);
-    var m = imageUrl.match(/^https:\/\/([^#?]+)/);
-    var Key = (m && m[1]) || '';
+    let m = imageUrl.match(/^https:\/\/[^/]+\/([^#?]+)/);
+    let Key = (m && m[1]) || '';
     if (Key) {
       this.notifyMessage('primary', '正在删除图片', 1000);
-
       deletePic(Key).then((data) => {
         if (data) {
           console.log(data);
@@ -363,9 +363,9 @@ Page({
 
   // 开启管理员模式
   rightOfDelete() {
-    var { Actions } = this.data;
+    let { Actions } = this.data;
 
-    if (Actions.length == 3) {
+    if (Actions.length === 3) {
       console.log('开启管理员模式！');
       Actions.push({
         name: '删除图片',
@@ -382,7 +382,7 @@ Page({
 
   // 文件夹选择
   bindPickerChange(e) {
-    var { toolBar } = this.data;
+    let { toolBar } = this.data;
     console.log('picker发送选择改变，当前文件夹为', toolBar.folder[e.detail.value]);
     toolBar.selectFolder = e.detail.value;
     this.setData({
@@ -393,7 +393,7 @@ Page({
 
   // 深度遍历开关
   checkboxChange(e) {
-    var { toolBar } = this.data;
+    let { toolBar } = this.data;
     console.log('checkbox发送选择改变，当前深度遍历为', e.detail ? '开启' : '关闭');
     toolBar.deeper = e.detail;
     this.setData({
@@ -404,7 +404,7 @@ Page({
 
   // 下一页按钮
   nextPage() {
-    var { marker } = this.data;
+    let { marker } = this.data;
     console.log(`marker值为${marker}`);
     this.render(marker);
   },

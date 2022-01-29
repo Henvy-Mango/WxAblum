@@ -8,7 +8,7 @@
   },
   "scripts": {
     "eslint": "eslint . --ext .js,.wxml",
-    "eslint:fix": "eslint . --fix --ext .js,.wxml .",
+    "eslint:fix": "eslint . --fix --ext .js,.wxml",
     "prettier": "prettier -w './**/*.{js,wxml,wxss,json}'",
     "prepare": "husky install"
   },
