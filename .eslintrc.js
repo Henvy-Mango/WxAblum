@@ -29,7 +29,7 @@ module.exports = {
         node: true,
         commonjs: true,
       },
-      extends: ['eslint:recommended'],
+      extends: ['alloy', 'eslint:recommended'],
       parser: '@babel/eslint-parser',
       parserOptions: {
         requireConfigFile: false,
@@ -40,7 +40,7 @@ module.exports = {
           globalReturn: false,
         },
       },
-      //全局变量
+      // 全局变量
       globals: {
         App: true,
         Page: true,
@@ -60,6 +60,13 @@ module.exports = {
         semi: [2, 'always'],
         quotes: [2, 'single'],
         'comma-dangle': [1, 'always-multiline'],
+        'no-unreachable': 'error',
+        'default-case-last': 'error',
+        'no-duplicate-imports': 'error',
+        'no-irregular-whitespace': 'error',
+        'max-nested-callbacks': ['error', 3],
+        'no-promise-executor-return': 'error',
+        'no-cond-assign': ['error', 'except-parens'],
       },
     },
   ],
