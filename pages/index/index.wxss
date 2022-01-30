@@ -104,3 +104,5 @@ page {
   display: flex;
   justify-content: center;
 }
+
+@import 'index-wxa-auto-dark.wxss';
