@@ -30,7 +30,7 @@
     "@vant/weapp": "^1.10.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.12",
+    "@babel/core": "^7.17.0",
     "@babel/eslint-parser": "^7.16.5",
     "eslint": "^8.8.0",
     "eslint-config-alloy": "^4.4.0",
