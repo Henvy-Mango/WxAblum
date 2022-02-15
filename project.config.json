@@ -21,7 +21,7 @@
     "autoAudits": false,
     "showShadowRootInWxmlPanel": true,
     "scopeDataCheck": false,
-    "uglifyFileName": true,
+    "uglifyFileName": false,
     "checkInvalidKey": true,
     "checkSiteMap": true,
     "uploadWithSourceMap": true,
@@ -53,7 +53,7 @@
   },
   "simulatorType": "wechat",
   "simulatorPluginLibVersion": {},
-  "libVersion": "2.22.0",
+  "libVersion": "2.21.3",
   "appid": "wxfbc5db33bd702838",
   "condition": {}
 }

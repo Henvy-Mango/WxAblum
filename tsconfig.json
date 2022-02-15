@@ -4,7 +4,7 @@
     "noImplicitAny": true,
     "module": "CommonJS",
     "target": "ES2020",
-    "allowJs": true,
+    // "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
@@ -17,8 +17,8 @@
     "strict": true,
     "strictPropertyInitialization": true,
     "lib": ["ES2020"],
-    "typeRoots": ["./typings"]
+    "typeRoots": ["miniprogram-api-typings"]
   },
-  "include": ["./**/*.ts"],
+  "include": ["./miniprogram/**/*.ts"],
   "exclude": ["node_modules"]
 }
