@@ -1,3 +1,8 @@
+/*
+ * Eslint config file
+ * Documentation: https://eslint.org/docs/user-guide/configuring/
+ * Install the Eslint extension before using this feature.
+ */
 module.exports = {
   root: true,
   overrides: [
@@ -24,21 +29,16 @@ module.exports = {
     {
       files: ['*.js'],
       env: {
-        browser: true,
         es6: true,
+        browser: true,
         node: true,
-        commonjs: true,
       },
-      extends: ['alloy', 'eslint:recommended'],
-      parser: '@babel/eslint-parser',
+      ecmaFeatures: {
+        modules: true,
+      },
       parserOptions: {
-        requireConfigFile: false,
-        ecmaVersion: 6,
+        ecmaVersion: 2018,
         sourceType: 'module',
-        allowImportExportEverywhere: false,
-        ecmaFeatures: {
-          globalReturn: false,
-        },
       },
       // 全局变量
       globals: {
@@ -53,7 +53,11 @@ module.exports = {
         module: true,
         setTimeout: true,
         getCurrentPages: true,
+        requirePlugin: true,
+        requireMiniProgram: true,
       },
+      parser: '@babel/eslint-parser',
+      extends: ['alloy', 'eslint:recommended'],
       rules: {
         'no-tabs': 2,
         'no-extra-semi': 2,

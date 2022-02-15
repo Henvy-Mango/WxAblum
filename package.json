@@ -2,10 +2,6 @@
   "name": "album",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
-  "directories": {
-    "lib": "lib"
-  },
   "scripts": {
     "eslint": "eslint . --ext .js,.wxml",
     "eslint:fix": "eslint . --fix --ext .js,.wxml",
@@ -15,9 +11,13 @@
   "lint-staged": {
     "*.{js,wxml}": [
       "eslint . --fix --ext .js,.wxml",
-      "prettier -w './**/*.{js,wxml}'"
+      "prettier -w './**/*.{js,wxml}'",
+      "git add"
     ],
-    "*.{wxss,json}": "prettier -w './**/*.{wxss,json}'"
+    "*.{wxss,json}": [
+      "prettier -w './**/*.{wxss,json}'",
+      "git add"
+    ]
   },
   "repository": {
     "type": "git",
@@ -37,6 +37,7 @@
     "eslint-plugin-wxml": "^0.6.3",
     "husky": "^7.0.4",
     "lint-staged": "^12.3.4",
+    "miniprogram-api-typings": "^3.4.5",
     "prettier": "^2.5.1"
   }
 }

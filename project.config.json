@@ -1,5 +1,13 @@
 {
-  "description": "",
+  "description": "项目配置文件",
+  "packOptions": {
+    "ignore": []
+  },
+  "projectname": "naomi-album",
+  "compileType": "miniprogram",
+  "miniprogramRoot": "miniprogram/",
+  "cloudfunctionRoot": "functions/",
+  "cloudfunctionTemplateRoot": "cloudfunctionTemplate/",
   "setting": {
     "urlCheck": false,
     "es6": true,
@@ -29,37 +37,23 @@
     },
     "useIsolateContext": false,
     "userConfirmedBundleSwitch": false,
-    "packNpmManually": false,
-    "packNpmRelationList": [],
+    "packNpmManually": true,
+    "packNpmRelationList": [
+      {
+        "packageJsonPath": "./package.json",
+        "miniprogramNpmDistDir": "miniprogram/"
+      }
+    ],
     "minifyWXSS": true,
     "disableUseStrict": false,
     "minifyWXML": true,
     "showES6CompileOption": false,
-    "useCompilerPlugins": false,
+    "useCompilerPlugins": ["typescript", "sass"],
     "ignoreUploadUnusedFiles": true
   },
-  "compileType": "miniprogram",
-  "libVersion": "2.22.0",
-  "appid": "wxfbc5db33bd702838",
-  "projectname": "naomi-album",
-  "isGameTourist": false,
   "simulatorType": "wechat",
   "simulatorPluginLibVersion": {},
-  "cloudfunctionRoot": "functions/",
-  "cloudfunctionTemplateRoot": "cloudfunctionTemplate",
-  "condition": {
-    "search": {
-      "list": []
-    },
-    "conversation": {
-      "list": []
-    },
-    "game": {
-      "currentL": -1,
-      "list": []
-    },
-    "miniprogram": {
-      "list": []
-    }
-  }
+  "libVersion": "2.22.0",
+  "appid": "wxfbc5db33bd702838",
+  "condition": {}
 }
