@@ -3,15 +3,15 @@ import config from '../config';
 
 const { stsUrl, menuUrl, Bucket, Region } = config;
 
-export function getSign() {
+export const getSign = () => {
   return new COS({
     getAuthorization(arg, callback) {
       wx.request({
         method: 'GET',
         url: stsUrl, // 服务端签名，参考 server 目录下的两个签名例子
         dataType: 'json',
-        success: function (result) {
-          let data = result.data;
+        success: (result) => {
+          const data = result.data;
           callback({
             TmpSecretId: data.credentials && data.credentials.tmpSecretId,
             TmpSecretKey: data.credentials && data.credentials.tmpSecretKey,
@@ -22,9 +22,9 @@ export function getSign() {
       });
     },
   });
-}
+};
 
-export function getMenu() {
+export const getMenu = () => {
   return new Promise((resolve, reject) => {
     wx.request({
       url: menuUrl,
@@ -39,11 +39,11 @@ export function getMenu() {
       },
     });
   });
-}
+};
 
-export function getDir(regularExpression) {
+export const getDir = (regularExpression) => {
   return new Promise((resolve, reject) => {
-    const cos = getApp().globalData.cos;
+    const { cos } = getApp().globalData;
     cos.getBucket(
       {
         Bucket,
@@ -53,19 +53,19 @@ export function getDir(regularExpression) {
       },
       (err, data) => {
         if (data) {
-          let list = data.CommonPrefixes.map((item) => item.Prefix).filter((item) => regularExpression.test(item));
+          const list = data.CommonPrefixes.map((item) => item.Prefix).filter((item) => regularExpression.test(item));
           resolve(list);
         }
         if (err) {
           reject(err);
         }
-      }
+      },
     );
   });
-}
+};
 
-export function getBucket(Prefix, Marker, Delimiter) {
-  const cos = getApp().globalData.cos;
+export const getBucket = (Prefix, Marker, Delimiter) => {
+  const { cos } = getApp().globalData;
   return new Promise((resolve, reject) => {
     cos.getBucket(
       {
@@ -84,14 +84,14 @@ export function getBucket(Prefix, Marker, Delimiter) {
         if (err) {
           reject(err);
         }
-      }
+      },
     );
   });
-}
+};
 
-export function uploadPic(Key, FilePath) {
+export const uploadPic = (Key, FilePath) => {
   return new Promise((resolve, reject) => {
-    const cos = getApp().globalData.cos;
+    const { cos } = getApp().globalData;
     cos.postObject(
       {
         Bucket,
@@ -106,14 +106,14 @@ export function uploadPic(Key, FilePath) {
         if (err) {
           reject(err);
         }
-      }
+      },
     );
   });
-}
+};
 
-export function deletePic(Key) {
+export const deletePic = (Key) => {
   return new Promise((resolve, reject) => {
-    const cos = getApp().globalData.cos;
+    const { cos } = getApp().globalData;
     console.log('delete pic', Key);
     cos.deleteObject(
       {
@@ -128,13 +128,13 @@ export function deletePic(Key) {
         if (err) {
           reject(err);
         }
-      }
+      },
     );
   });
-}
+};
 
 // 图片安全审查
-export function checkSafePic(tempFilePaths) {
+export const checkSafePic = (tempFilePaths) => {
   return new Promise((resolve, reject) => {
     // 文件管理器读取路径文件流
     wx.getFileSystemManager().readFile({
@@ -142,7 +142,7 @@ export function checkSafePic(tempFilePaths) {
       success: (buffer) => {
         console.log(`${(buffer.data.byteLength / 1024).toFixed(3)}KB`);
         // 云函数调用
-        wx.cloud.callFunction({
+        wx.cloud.callconst({
           name: 'imgcheck',
           data: {
             value: buffer.data,
@@ -164,4 +164,4 @@ export function checkSafePic(tempFilePaths) {
       },
     });
   });
-}
+};
