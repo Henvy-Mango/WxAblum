@@ -10,8 +10,8 @@
   },
   "lint-staged": {
     "*.{js,ts,wxml}": [
-      "eslint . --fix --ext .js,.wxml",
       "prettier -w",
+      "eslint . --fix --ext .js,.wxml",
       "git add"
     ],
     "*.{wxss,json}": [

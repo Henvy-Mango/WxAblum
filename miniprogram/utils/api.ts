@@ -23,7 +23,7 @@ export const getSign = () => {
           Key: options.Key,
         },
         dataType: 'json',
-        success: function (result) {
+        success: (result) => {
           const data = result.data;
           callback({
             TmpSecretId: data.credentials && data.credentials.tmpSecretId,
@@ -37,16 +37,22 @@ export const getSign = () => {
   });
 };
 
+interface menuType {
+  img: string;
+  msg: string;
+  date: Date;
+}
+
 export const getMenu = () => {
   return new Promise((resolve, reject) => {
-    wx.request({
+    wx.request<menuType>({
       url: menuUrl,
       method: 'GET',
-      success(res) {
+      success: (res) => {
         console.info(res);
         resolve(res);
       },
-      fail(res) {
+      fail: (res) => {
         console.error(res);
         reject(res);
       },
@@ -72,7 +78,7 @@ export const getDir = (regularExpression: RegExp) => {
         if (err) {
           reject(err);
         }
-      }
+      },
     );
   });
 };
@@ -97,7 +103,7 @@ export const getBucket = (Prefix: string, Marker: string, Delimiter: string) => 
         if (err) {
           reject(err);
         }
-      }
+      },
     );
   });
 };
@@ -119,7 +125,7 @@ export const uploadPic = (Key: string, FilePath: string) => {
         if (err) {
           reject(err);
         }
-      }
+      },
     );
   });
 };
@@ -141,7 +147,7 @@ export const deletePic = (Key: string) => {
         if (err) {
           reject(err);
         }
-      }
+      },
     );
   });
 };

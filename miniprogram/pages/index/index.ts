@@ -1,12 +1,16 @@
-import { formatTime } from '../../lib/util';
+import { formatTime } from '../../utils/tool';
+import { getMenu } from '../../utils/api';
 
 import Dialog from '../../miniprogram_npm/@vant/weapp/dialog/dialog';
-
-import { getMenu } from '../../lib/api';
 
 // 页面目前需要从服务端获取的数据：公告栏内容tip
 Page({
   data: {
+    tip: {
+      img: '',
+      msg: '',
+      date: '',
+    },
     // 页面跳转按钮列表
     navigationList: [
       {
@@ -78,7 +82,7 @@ Page({
         self.clearAnimation('#id' + id, {
           opacity: true,
         });
-      }
+      },
     );
   },
 
