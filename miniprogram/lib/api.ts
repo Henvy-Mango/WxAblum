@@ -3,10 +3,19 @@ import config from '../config';
 
 const { stsUrl, menuUrl, Bucket, Region } = config;
 
+interface signType {
+  credentials: {
+    tmpSecretId: string;
+    tmpSecretKey: string;
+    sessionToken: string;
+  };
+  expiredTime: string;
+}
+
 export const getSign = () => {
   return new COS({
-    getAuthorization(arg, callback) {
-      wx.request({
+    getAuthorization(callback: any) {
+      wx.request<signType>({
         method: 'GET',
         url: stsUrl, // 服务端签名，参考 server 目录下的两个签名例子
         dataType: 'json',
@@ -41,7 +50,7 @@ export const getMenu = () => {
   });
 };
 
-export const getDir = (regularExpression) => {
+export const getDir = (regularExpression: RegExp) => {
   return new Promise((resolve, reject) => {
     const { cos } = getApp().globalData;
     cos.getBucket(
@@ -59,12 +68,12 @@ export const getDir = (regularExpression) => {
         if (err) {
           reject(err);
         }
-      },
+      }
     );
   });
 };
 
-export const getBucket = (Prefix, Marker, Delimiter) => {
+export const getBucket = (Prefix: string, Marker: string, Delimiter: string) => {
   const { cos } = getApp().globalData;
   return new Promise((resolve, reject) => {
     cos.getBucket(
@@ -84,12 +93,12 @@ export const getBucket = (Prefix, Marker, Delimiter) => {
         if (err) {
           reject(err);
         }
-      },
+      }
     );
   });
 };
 
-export const uploadPic = (Key, FilePath) => {
+export const uploadPic = (Key: string, FilePath: string) => {
   return new Promise((resolve, reject) => {
     const { cos } = getApp().globalData;
     cos.postObject(
@@ -106,12 +115,12 @@ export const uploadPic = (Key, FilePath) => {
         if (err) {
           reject(err);
         }
-      },
+      }
     );
   });
 };
 
-export const deletePic = (Key) => {
+export const deletePic = (Key: string) => {
   return new Promise((resolve, reject) => {
     const { cos } = getApp().globalData;
     console.log('delete pic', Key);
@@ -128,13 +137,13 @@ export const deletePic = (Key) => {
         if (err) {
           reject(err);
         }
-      },
+      }
     );
   });
 };
 
 // 图片安全审查
-export const checkSafePic = (tempFilePaths) => {
+export const checkSafePic = (tempFilePaths: string) => {
   return new Promise((resolve, reject) => {
     // 文件管理器读取路径文件流
     wx.getFileSystemManager().readFile({
@@ -142,7 +151,7 @@ export const checkSafePic = (tempFilePaths) => {
       success: (buffer) => {
         console.log(`${(buffer.data.byteLength / 1024).toFixed(3)}KB`);
         // 云函数调用
-        wx.cloud.callconst({
+        wx.cloud.callFunction({
           name: 'imgcheck',
           data: {
             value: buffer.data,

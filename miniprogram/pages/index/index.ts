@@ -19,8 +19,7 @@ Page({
   },
 
   onLoad: function () {
-    let that = this;
-    that.getTip();
+    this.getTip();
   },
 
   // 开启图片预览
@@ -32,11 +31,11 @@ Page({
 
   // 获取公告
   getTip: function () {
-    let that = this;
-    getMenu().then((res) => {
-      let { navigationList } = this.data;
-      let { album, announcement } = res.data;
-      let tip = {
+    const self = this;
+    getMenu().then((res: any) => {
+      const { navigationList } = self.data;
+      const { album, announcement } = res.data;
+      const tip = {
         img: announcement.photoUrl,
         msg: announcement.message,
         date: formatTime(new Date(res.header['Last-Modified'])),
@@ -48,7 +47,7 @@ Page({
           bindEvent: album.bindEvent !== '' ? album.bindEvent : 'goToAlbum',
         });
       }
-      that.setData({
+      self.setData({
         tip,
         navigationList,
       });
@@ -56,9 +55,9 @@ Page({
   },
 
   // 点击跳转按钮时执行的动画
-  touchAminate(id) {
-    let that = this;
-    that.animate(
+  touchAminate(id: string) {
+    const self = this;
+    self.animate(
       '#id' + id,
       [
         {
@@ -76,7 +75,7 @@ Page({
       ],
       50,
       () => {
-        that.clearAnimation('#id' + id, {
+        self.clearAnimation('#id' + id, {
           opacity: true,
         });
       }
@@ -84,9 +83,9 @@ Page({
   },
 
   // 上传图片
-  uploadImg(e) {
-    let that = this;
-    that.touchAminate(e.currentTarget.dataset.item.id);
+  uploadImg(e: WechatMiniprogram.BaseEvent) {
+    const self = this;
+    self.touchAminate(e.currentTarget.dataset.item.id);
     setTimeout(() => {
       // 上传图片
       wx.navigateTo({
@@ -96,9 +95,9 @@ Page({
   },
 
   // 上传视频
-  uploadVedio(e) {
-    let that = this;
-    that.touchAminate(e.currentTarget.dataset.item.id);
+  uploadVedio(e: WechatMiniprogram.BaseEvent) {
+    const self = this;
+    self.touchAminate(e.currentTarget.dataset.item.id);
     setTimeout(() => {
       // 上传视频
       wx.navigateTo({
@@ -108,9 +107,9 @@ Page({
   },
 
   // 前往相册页
-  goToAlbum(e) {
-    let that = this;
-    that.touchAminate(e.currentTarget.dataset.item.id);
+  goToAlbum(e: WechatMiniprogram.BaseEvent) {
+    const self = this;
+    self.touchAminate(e.currentTarget.dataset.item.id);
     setTimeout(() => {
       wx.navigateTo({
         url: '../album/album',

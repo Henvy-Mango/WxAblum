@@ -9,7 +9,7 @@
     "prepare": "husky install"
   },
   "lint-staged": {
-    "*.{js,wxml}": [
+    "*.{js,ts,wxml}": [
       "eslint . --fix --ext .js,.wxml",
       "prettier -w",
       "git add"

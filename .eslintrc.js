@@ -123,6 +123,7 @@ module.exports = {
         'max-nested-callbacks': ['error', 3],
         'no-promise-executor-return': 'error',
         'no-cond-assign': ['error', 'except-parens'],
+        '@typescript-eslint/no-this-alias': ['error', { allowDestructuring: true, allowedNames: ['self'] }],
       },
     },
   ],
