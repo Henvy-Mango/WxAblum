@@ -30,13 +30,13 @@ module.exports = {
   endOfLine: 'lf',
   overrides: [
     {
-      files: ['*.wxss', '*.acss'],
+      files: ['*.wxss', '*.scss'],
       options: {
         parser: 'css',
       },
     },
     {
-      files: ['*.wxml', '*.axml'],
+      files: ['*.wxml'],
       options: {
         parser: 'html',
       },

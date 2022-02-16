@@ -1,4 +1,4 @@
-import COS from './cos-wx-sdk-v5';
+import COS from '../lib/cos-wx-sdk-v5.min';
 import config from '../config';
 
 const { stsUrl, menuUrl, Bucket, Region } = config;
@@ -14,12 +14,16 @@ interface signType {
 
 export const getSign = () => {
   return new COS({
-    getAuthorization(callback: any) {
+    getAuthorization(options, callback) {
+      // 异步获取签名
       wx.request<signType>({
-        method: 'GET',
-        url: stsUrl, // 服务端签名，参考 server 目录下的两个签名例子
+        url: stsUrl, // 步骤二提供的签名接口
+        data: {
+          Method: options.Method,
+          Key: options.Key,
+        },
         dataType: 'json',
-        success: (result) => {
+        success: function (result) {
           const data = result.data;
           callback({
             TmpSecretId: data.credentials && data.credentials.tmpSecretId,
@@ -149,27 +153,29 @@ export const checkSafePic = (tempFilePaths: string) => {
     wx.getFileSystemManager().readFile({
       filePath: tempFilePaths,
       success: (buffer) => {
-        console.log(`${(buffer.data.byteLength / 1024).toFixed(3)}KB`);
+        const tmp = buffer.data as ArrayBuffer;
+        console.log(`${(tmp.byteLength / 1024).toFixed(3)}KB`);
         // 云函数调用
-        wx.cloud.callFunction({
-          name: 'imgcheck',
-          data: {
-            value: buffer.data,
-          },
-          success: (json) => {
-            console.log(json);
-            if (json.result.errCode === 87014) {
+        wx.cloud
+          .callFunction({
+            name: 'imgcheck',
+            data: {
+              value: tmp,
+            },
+          })
+          .then((res: any) => {
+            console.log(res);
+            if (res.result.errCode === 87014) {
               console.log('图片违法违规');
               resolve(false);
             } else {
               resolve(true);
             }
-          },
-          fail: (res) => {
+          })
+          .catch((res) => {
             console.log(res);
             reject(res);
-          },
-        });
+          });
       },
     });
   });
