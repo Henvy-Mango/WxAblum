@@ -1,4 +1,4 @@
-import { getSign } from './lib/api';
+import { getSign } from './utils/api';
 
 App({
   globalData: {

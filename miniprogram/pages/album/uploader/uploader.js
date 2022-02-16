@@ -1,6 +1,6 @@
-import { getRandFileName } from '../../../lib/util';
+import { getRandFileName } from '../../../utils/tool';
 
-import { checkSafePic, uploadPic, getDir } from '../../../lib/api';
+import { checkSafePic, uploadPic, getDir } from '../../../utils/api';
 
 import Notify from '../../../miniprogram_npm/@vant/weapp/notify/notify';
 

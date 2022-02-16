@@ -1,6 +1,6 @@
-import { qSort, listToMatrix, camSafeUrlEncode } from '../../lib/util';
+import { qSort, listToMatrix, camSafeUrlEncode } from '../../utils/tool';
 
-import { getDir, getBucket, deletePic } from '../../lib/api';
+import { getDir, getBucket, deletePic } from '../../utils/api';
 
 import config from '../../config';
 
