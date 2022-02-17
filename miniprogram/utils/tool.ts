@@ -10,7 +10,11 @@ export const formatTime = (date: Date, fmt = 'yyyy-MM-dd') => {
     S: date.getMilliseconds(), // millisecond
   };
   let format;
-  if (/(y+)/.test(fmt)) format = fmt.replace(RegExp.$1, String(date.getFullYear()).substring(4 - RegExp.$1.length));
+  if (/(y+)/.test(fmt)) {
+    format = fmt.replace(RegExp.$1, String(date.getFullYear()).substring(4 - RegExp.$1.length));
+  } else {
+    return 'error';
+  }
   for (const k in o)
     if (new RegExp('(' + k + ')').test(format))
       format = format.replace(RegExp.$1, RegExp.$1.length === 1 ? o[k] : ('00' + o[k]).substring(String(o[k]).length));
@@ -73,11 +77,11 @@ export const qSort = (arr: any[]): any[] => {
   const pivot = arr.splice(pivotIndex, 1)[0];
   const left = [];
   const right = [];
-  for (let i = 0; i < arr.length; i++) {
-    if (new Date(arr[i].LastModified).getTime() < new Date(pivot.LastModified).getTime()) {
-      left.push(arr[i]);
+  for (const item of arr) {
+    if (new Date(item.LastModified).getTime() < new Date(pivot.LastModified).getTime()) {
+      left.push(item);
     } else {
-      right.push(arr[i]);
+      right.push(item);
     }
   }
   return qSort(left).concat([pivot], qSort(right));

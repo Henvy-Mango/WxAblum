@@ -1,5 +1,3 @@
-import { formatTime } from '../../utils/tool';
-
 import { getMenu } from '../../utils/api';
 
 import Dialog from '../../miniprogram_npm/@vant/weapp/dialog/dialog';
@@ -37,21 +35,15 @@ Page({
   // 获取公告
   getTip: function () {
     const self = this;
-    getMenu().then((res: any) => {
+    getMenu().then((res) => {
       const { navigationList } = self.data;
-      const { album, announcement } = res.data;
-      const tip = {
-        img: announcement.photoUrl,
-        msg: announcement.message,
-        date: formatTime(new Date(res.header['Last-Modified'])),
-      };
-      if (album.enable) {
-        navigationList.push({
-          id: navigationList.length + 1,
-          name: album.bindName !== '' ? album.bindName : '云相册',
-          bindEvent: album.bindEvent !== '' ? album.bindEvent : 'goToAlbum',
-        });
-      }
+      const { tip, button } = res;
+
+      navigationList.push({
+        id: navigationList.length + 1,
+        ...button,
+      });
+
       self.setData({
         tip,
         navigationList,

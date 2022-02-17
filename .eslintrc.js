@@ -102,14 +102,11 @@ module.exports = {
         setTimeout: true,
         getCurrentPages: true,
         requirePlugin: true,
+        WechatMiniprogram: true,
         requireMiniProgram: true,
       },
       plugins: ['@typescript-eslint'],
-      extends: [
-        'eslint:recommended',
-        'plugin:@typescript-eslint/eslint-recommended',
-        'plugin:@typescript-eslint/recommended',
-      ],
+      extends: ['alloy', 'alloy/typescript'],
       rules: {
         'no-tabs': 2,
         'no-extra-semi': 2,

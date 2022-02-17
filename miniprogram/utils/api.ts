@@ -1,22 +1,15 @@
 import COS from '../lib/cos-wx-sdk-v5.min';
 import config from '../config';
+import { Api } from '../typings';
+import { formatTime } from './tool';
 
 const { stsUrl, menuUrl, Bucket, Region } = config;
-
-interface signType {
-  credentials: {
-    tmpSecretId: string;
-    tmpSecretKey: string;
-    sessionToken: string;
-  };
-  expiredTime: string;
-}
 
 export const getSign = () => {
   return new COS({
     getAuthorization(options, callback) {
       // 异步获取签名
-      wx.request<signType>({
+      wx.request<Api.signType>({
         url: stsUrl, // 步骤二提供的签名接口
         data: {
           Method: options.Method,
@@ -26,9 +19,9 @@ export const getSign = () => {
         success: (result) => {
           const data = result.data;
           callback({
-            TmpSecretId: data.credentials && data.credentials.tmpSecretId,
-            TmpSecretKey: data.credentials && data.credentials.tmpSecretKey,
-            XCosSecurityToken: data.credentials && data.credentials.sessionToken,
+            TmpSecretId: data.credentials?.tmpSecretId,
+            TmpSecretKey: data.credentials?.tmpSecretKey,
+            XCosSecurityToken: data.credentials?.sessionToken,
             ExpiredTime: data.expiredTime,
           });
         },
@@ -37,27 +30,39 @@ export const getSign = () => {
   });
 };
 
-interface menuType {
-  img: string;
-  msg: string;
-  date: Date;
-}
-
 export const getMenu = () => {
-  return new Promise((resolve, reject) => {
-    wx.request<menuType>({
-      url: menuUrl,
-      method: 'GET',
-      success: (res) => {
-        console.info(res);
-        resolve(res);
-      },
-      fail: (res) => {
-        console.error(res);
-        reject(res);
-      },
-    });
-  });
+  return new Promise<{ tip: { img: string; msg: string; date: string }; button: { name: string; bindEvent: string } }>(
+    (resolve, reject) => {
+      wx.request<Api.menuType>({
+        url: menuUrl,
+        method: 'GET',
+        success: (res) => {
+          console.info(res);
+          const { album, announcement } = res.data;
+          const tip = {
+            img: announcement.photoUrl,
+            msg: announcement.message,
+            date: formatTime(new Date(res.header['Last-Modified'])),
+          };
+          let button = { name: '', bindEvent: '' };
+          if (album.enable) {
+            button = {
+              name: album.bindName !== '' ? album.bindName : '云相册',
+              bindEvent: album.bindEvent !== '' ? album.bindEvent : 'goToAlbum',
+            };
+          }
+          resolve({
+            tip,
+            button,
+          });
+        },
+        fail: (res) => {
+          console.error(res);
+          reject(res);
+        },
+      });
+    },
+  );
 };
 
 export const getDir = (regularExpression: RegExp) => {
@@ -70,7 +75,7 @@ export const getDir = (regularExpression: RegExp) => {
         Prefix: '',
         Delimiter: '/',
       },
-      (err, data) => {
+      (err: any, data: { CommonPrefixes: any[] }) => {
         if (data) {
           const list = data.CommonPrefixes.map((item) => item.Prefix).filter((item) => regularExpression.test(item));
           resolve(list);
@@ -95,7 +100,7 @@ export const getBucket = (Prefix: string, Marker: string, Delimiter: string) => 
         Delimiter,
         MaxKeys: 100,
       },
-      (err, data) => {
+      (err: any, data: any) => {
         if (data) {
           console.log(data);
           resolve(data);
@@ -118,7 +123,7 @@ export const uploadPic = (Key: string, FilePath: string) => {
         Key,
         FilePath,
       },
-      (err, data) => {
+      (err: any, data: any) => {
         if (data) {
           resolve(data);
         }
@@ -140,7 +145,7 @@ export const deletePic = (Key: string) => {
         Region,
         Key,
       },
-      (err, data) => {
+      (err: any, data: any) => {
         if (data) {
           resolve(data);
         }
