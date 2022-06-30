@@ -27,16 +27,16 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "@vant/weapp": "^1.10.3"
+    "@vant/weapp": "1.10.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.18.2",
-    "@babel/eslint-parser": "^7.18.2",
-    "eslint": "^8.16.0",
-    "eslint-config-alloy": "^4.5.1",
-    "eslint-plugin-wxml": "^0.7.2",
-    "husky": "^8.0.1",
-    "lint-staged": "^13.0.0",
-    "prettier": "^2.6.2"
+    "@babel/core": "7.18.2",
+    "@babel/eslint-parser": "7.18.2",
+    "eslint": "8.16.0",
+    "eslint-config-alloy": "4.5.1",
+    "eslint-plugin-wxml": "0.7.2",
+    "husky": "8.0.1",
+    "lint-staged": "13.0.0",
+    "prettier": "2.6.2"
   }
 }
