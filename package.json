@@ -34,7 +34,7 @@
     "@babel/eslint-parser": "^7.18.9",
     "eslint": "^8.20.0",
     "eslint-config-alloy": "^4.6.2",
-    "eslint-plugin-wxml": "^0.7.3",
+    "eslint-plugin-wxml": "^0.7.4",
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1"
