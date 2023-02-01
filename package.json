@@ -27,7 +27,7 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "@vant/weapp": "^1.10.9"
+    "@vant/weapp": "^1.10.12"
   },
   "devDependencies": {
     "@babel/core": "^7.20.5",
