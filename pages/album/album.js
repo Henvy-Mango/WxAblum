@@ -288,7 +288,7 @@ Page({
   // 拷贝图片链接
   copyLink() {
     let url = decodeURIComponent(this.data.imageInAction);
-    url = 'https://img.naomi.pub/' + url.substring(url.lastIndexOf('/') + 1, url.length);
+    url = `${config.CustomDomain}/${url.substring(url.lastIndexOf('/') + 1, url.length)}`;
     console.log('copy_image_url', url);
 
     wx.setClipboardData({
