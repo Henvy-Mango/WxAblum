@@ -5,4 +5,5 @@ export default {
   Region: '', // 必须，COS存储桶地区
   Delimiter: '', // 分隔符，建议保持默认，填写'/'后只查询文件夹
   Prefix: '', // 前缀名，建议保持默认，填写后只查询带前缀的文件
+  CustomDomain: '', // 自定义域名，如https://cdn.example.com
 };
