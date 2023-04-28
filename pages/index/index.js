@@ -39,7 +39,7 @@ Page({
       let tip = {
         img: announcement.photoUrl,
         msg: announcement.message,
-        date: formatTime(new Date(res.header['Last-Modified'])),
+        date: formatTime(new Date(res.header['last-modified'])),
       };
       if (album.enable) {
         navigationList.push({
