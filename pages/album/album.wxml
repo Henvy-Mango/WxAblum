@@ -49,7 +49,7 @@
 
   <!-- 相册列表 -->
   <view class="album-container">
-    <view class="item-group" wx:for="{{layoutList}}" wx:for-item="group" wx:for-index="rowIndex" wx:key="group">
+    <view class="item-group" wx:for="{{layoutList}}" wx:for-item="group" wx:for-index="rowIndex" wx:key="unique">
       <block wx:for="{{group}}" wx:for-item="item" wx:for-index="cellIndex" wx:key="item">
         <!-- 上传预留位 -->
         <block wx:if="{{item.type === 'add'}}">
@@ -107,7 +107,7 @@
   current="{{previewIndex}}"
   bind:tap="leavePreviewMode"
   style="display: {{previewMode ? 'block' : 'none'}};">
-  <block wx:for="{{albumList}}" wx:for-item="item" wx:key="item">
+  <block wx:for="{{albumList}}" wx:for-item="item" wx:key="unique">
     <swiper-item>
       <image
         wx:if="{{previewMode}}"
