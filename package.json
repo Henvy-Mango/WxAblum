@@ -27,12 +27,12 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "@vant/weapp": "^1.10.16"
+    "@vant/weapp": "^1.10.19"
   },
   "devDependencies": {
-    "@babel/core": "^7.21.4",
-    "@babel/eslint-parser": "^7.21.3",
-    "eslint": "^8.39.0",
+    "@babel/core": "^7.22.5",
+    "@babel/eslint-parser": "^7.22.5",
+    "eslint": "^8.43.0",
     "eslint-config-alloy": "^5.0.0",
     "eslint-plugin-wxml": "^0.7.5",
     "husky": "^8.0.3",
